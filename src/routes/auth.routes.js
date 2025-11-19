@@ -1,6 +1,7 @@
 import express from 'express';
 import * as authController from '../controllers/auth.controller.js';
 import { authMiddleware, authorizeRoles } from '../middlewares/auth.middleware.js';
+import { secretManager } from '../clients/dapr.secret.manager.js';
 
 const router = express.Router();
 
@@ -20,6 +21,20 @@ router.post('/email/resend', authController.resendVerificationEmail);
 // Token verification
 router.get('/verify', authMiddleware, authController.verify);
 router.get('/me', authMiddleware, authorizeRoles('customer', 'admin'), authController.me);
+
+// JWT configuration endpoint for BFF
+router.get('/config/jwt', async (req, res, next) => {
+  try {
+    const jwtSecret = await secretManager.getSecret('JWT_SECRET');
+    res.json({
+      secret: jwtSecret,
+      algorithm: 'HS256',
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/register', authController.register);
 router.route('/reactivate').post(authController.requestAccountReactivation).get(authController.reactivateAccount);
 router.delete('/account', authMiddleware, authController.deleteAccount);
