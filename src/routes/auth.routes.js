@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Local login
 router.post('/login', authController.login);
-router.post('/logout', authMiddleware, authController.logout);
+router.post('/logout', authController.logout);
 
 // Password operations
 router.post('/password/forgot', authController.forgotPassword);

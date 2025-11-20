@@ -15,6 +15,11 @@ import { publishEvent } from '../clients/dapr.service.client.js';
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
+  console.log('=== AUTH SERVICE: Login attempt ===');
+  console.log('Email:', email);
+  console.log('Has password:', !!password);
+  console.log('Timestamp:', new Date().toISOString());
+
   if (!email || !password) {
     logger.warn('Login attempt missing credentials', { email, traceId: req.traceId, spanId: req.spanId });
     return next(new ErrorResponse('Email and password are required', 400));
@@ -22,30 +27,39 @@ export const login = asyncHandler(async (req, res, next) => {
 
   const user = await getUserByEmail(email);
   if (!user) {
+    console.log('❌ Login failed: User not found for email:', email);
     logger.warn('Login failed: user not found', { email, traceId: req.traceId, spanId: req.spanId });
     return next(new ErrorResponse('Invalid credentials', 401));
   }
 
+  console.log('✅ User found:', user._id.toString(), 'Email verified:', user.isEmailVerified, 'Active:', user.isActive);
+
   if (user.isActive === false) {
+    console.log('❌ Login failed: Account deactivated');
     logger.warn('Login failed: account deactivated', { email, traceId: req.traceId, spanId: req.spanId });
     return next(new ErrorResponse('Account is deactivated', 403));
   }
 
   if (!user.isEmailVerified) {
+    console.log('❌ Login failed: Email not verified');
     logger.warn('Login failed: email not verified', { email, traceId: req.traceId, spanId: req.spanId });
     return next(new ErrorResponse('Please verify your email before logging in', 403));
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
+    console.log('❌ Login failed: Invalid password');
     logger.warn('Login failed: invalid password', { email, traceId: req.traceId, spanId: req.spanId });
     return next(new ErrorResponse('Invalid credentials', 401));
   }
 
+  console.log('✅ Password verified, issuing JWT token...');
   logger.info('User logged in', { userId: user._id, email, traceId: req.traceId, spanId: req.spanId });
 
   // Issue JWT token
   const token = await issueJwtToken(req, res, user);
+  console.log('✅ JWT token issued successfully');
+  console.log('Token preview:', token.substring(0, 30) + '...');
 
   // Publish login event
   try {

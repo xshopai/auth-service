@@ -20,7 +20,29 @@ const consoleFormat = winston.format.printf(({ level, message, timestamp, traceI
   const color = colors[level] || '';
 
   const traceInfo = traceId ? `[trace:${traceId.substring(0, 8)}]` : '[no-trace]';
-  const metaStr = Object.keys(meta).length > 0 ? ` | ${JSON.stringify(meta)}` : '';
+  
+  // Safely stringify meta, handling circular references
+  let metaStr = '';
+  if (Object.keys(meta).length > 0) {
+    try {
+      const seen = new WeakSet();
+      metaStr = ` | ${JSON.stringify(meta, (key, value) => {
+        if (value instanceof Error) {
+          return { name: value.name, message: value.message, stack: value.stack };
+        }
+        if (typeof value === 'object' && value !== null) {
+          // Check if we've seen this object before (circular reference)
+          if (seen.has(value)) {
+            return '[Circular]';
+          }
+          seen.add(value);
+        }
+        return value;
+      })}`;
+    } catch (err) {
+      metaStr = ` | [Error stringifying metadata: ${err.message}]`;
+    }
+  }
 
   return `${color}[${timestamp}] [${level.toUpperCase()}] ${NAME} ${traceInfo}: ${message}${metaStr}${reset}`;
 });
