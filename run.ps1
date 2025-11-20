@@ -2,6 +2,10 @@
 # Run Auth Service with Dapr sidecar
 # Usage: .\run.ps1
 
+# Set terminal title - use both methods to ensure it persists
+$host.ui.RawUI.WindowTitle = "Auth Service"
+[Console]::Title = "Auth Service"
+
 Write-Host "Starting Auth Service with Dapr..." -ForegroundColor Green
 Write-Host "Service will be available at: http://localhost:1004" -ForegroundColor Cyan
 Write-Host "Dapr HTTP endpoint: http://localhost:3504" -ForegroundColor Cyan

@@ -16,7 +16,7 @@ class DaprSecretManager {
     if (this.environment === 'production') {
       this.secretStoreName = 'azure-keyvault-secret-store';
     } else {
-      this.secretStoreName = 'local-secret-store';
+      this.secretStoreName = 'secret-store';
     }
 
     this.client = new DaprClient({
@@ -81,32 +81,29 @@ class DaprSecretManager {
   }
 
   /**
-   * Get multiple secrets at once
-   * @param {string[]} secretNames - List of secret names to retrieve
-   * @returns {Promise<Object>} Object mapping secret names to their values
-   */
-  async getMultipleSecrets(secretNames) {
-    const secrets = {};
-    for (const name of secretNames) {
-      secrets[name] = await this.getSecret(name);
-    }
-    return secrets;
-  }
-
-  /**
-   * Get JWT configuration from Dapr secrets
+   * Get JWT configuration from Dapr secrets and environment
+   * Only JWT_SECRET is truly secret - algorithm and expiration are just config
    * @returns {Promise<Object>} JWT configuration parameters
    */
   async getJwtConfig() {
-    const [secret, expire] = await Promise.all([this.getSecret('JWT_SECRET'), this.getSecret('JWT_EXPIRE')]);
+    const secret = await this.getSecret('JWT_SECRET');
 
     if (!secret) {
       throw new Error('JWT_SECRET not found in Dapr secret store');
     }
 
+    // Algorithm and expiration from environment variables (not secrets)
+    const algorithm = process.env.JWT_ALGORITHM || 'HS256';
+    const expiration = parseInt(process.env.JWT_EXPIRATION || '3600', 10);
+    const issuer = process.env.JWT_ISSUER || 'auth-service';
+    const audience = process.env.JWT_AUDIENCE || 'aioutlet-platform';
+
     return {
       secret,
-      expire: expire || '24h',
+      algorithm,
+      expiration, // expiration in seconds
+      issuer,
+      audience,
     };
   }
 }

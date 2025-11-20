@@ -13,15 +13,20 @@ async function getCachedJwtConfig() {
 }
 
 // --- Stateless JWT helpers ---
-export async function signToken(payload, expiresIn = '15m') {
+export async function signToken(payload, expiresIn) {
   const jwtConfig = await getCachedJwtConfig();
-  return jwt.sign(payload, jwtConfig.secret, { expiresIn });
+  // Use configured expiration if not explicitly provided
+  const tokenExpiration = expiresIn || `${jwtConfig.expiration}s`;
+  return jwt.sign(payload, jwtConfig.secret, { expiresIn: tokenExpiration });
 }
 
 export async function verifyToken(token) {
   try {
     const jwtConfig = await getCachedJwtConfig();
-    return jwt.verify(token, jwtConfig.secret);
+    return jwt.verify(token, jwtConfig.secret, {
+      issuer: jwtConfig.issuer,
+      audience: jwtConfig.audience
+    });
   } catch {
     return null;
   }
@@ -40,12 +45,14 @@ export async function issueJwtToken(req, res, user) {
     spanId: req.spanId,
   });
 
+  const jwtConfig = await getCachedJwtConfig();
+
   // Standard JWT claims (RFC 7519)
   const payload = {
     // Standard claims
     sub: user._id.toString(), // Subject (user ID)
-    iss: 'auth-service', // Issuer
-    aud: 'aioutlet-platform', // Audience
+    iss: jwtConfig.issuer, // Issuer
+    aud: jwtConfig.audience, // Audience
     iat: Math.floor(Date.now() / 1000), // Issued at
     // exp will be set by signToken via expiresIn option
 
@@ -56,14 +63,14 @@ export async function issueJwtToken(req, res, user) {
     emailVerified: user.isEmailVerified || false,
   };
 
-  const token = await signToken(payload, '1h');
+  const token = await signToken(payload); // Use configured expiration
 
   // Set as HTTP-only cookie for web clients
   res.cookie('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 60 * 60 * 1000, // 1 hour
+    maxAge: jwtConfig.expiration * 1000, // Convert seconds to milliseconds
   });
 
   return token;

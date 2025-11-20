@@ -35,7 +35,10 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
 
   try {
     const jwtConfig = await getCachedJwtConfig();
-    const decoded = jwt.verify(token, jwtConfig.secret);
+    const decoded = jwt.verify(token, jwtConfig.secret, {
+      issuer: jwtConfig.issuer,
+      audience: jwtConfig.audience
+    });
 
     // Validate standard claims
     if (!decoded.sub || !decoded.iss || !decoded.aud) {
