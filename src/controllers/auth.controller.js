@@ -15,11 +15,6 @@ import { publishEvent } from '../clients/dapr.service.client.js';
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  console.log('=== AUTH SERVICE: Login attempt ===');
-  console.log('Email:', email);
-  console.log('Has password:', !!password);
-  console.log('Timestamp:', new Date().toISOString());
-
   if (!email || !password) {
     logger.warn('Login attempt missing credentials', { email, traceId: req.traceId, spanId: req.spanId });
     return next(new ErrorResponse('Email and password are required', 400));
