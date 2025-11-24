@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # MongoDB for Auth Service
+  auth-mongodb:
+    image: mongo:latest
+    container_name: auth-mongodb
+    restart: unless-stopped
+    ports:
+      - "27021:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: auth_service_db
+    volumes:
+      - auth_mongodb_data:/data/db
+    networks:
+      - aioutlet-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      - "1004:1004"
+    environment:
+      - NODE_ENV=production
+      - PORT=1004
+      - MONGODB_URI=mongodb://admin:admin123@auth-mongodb:27017/auth_service_db?authSource=admin
+      - RABBITMQ_URL=amqp://admin:admin123@rabbitmq-message-broker:5672
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      auth-mongodb:
+        condition: service_healthy
+    networks:
+      - aioutlet-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:1004/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  auth_mongodb_data:
+    name: auth_mongodb_data
+
+networks:
+  aioutlet-network:
+    external: true
