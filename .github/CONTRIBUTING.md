@@ -1,6 +1,6 @@
-# Contributing to AIOutlet Auth Service
+# Contributing to xShop.ai Auth Service
 
-We welcome contributions to the AIOutlet Auth Service project! By contributing, you can help improve the project and make it more useful for everyone.
+We welcome contributions to the xShop.ai Auth Service project! By contributing, you can help improve the project and make it more useful for everyone.
 
 ## How to Contribute
 

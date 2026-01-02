@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Auth Service is the primary authentication and authorization component of the AIOutlet platform. It handles user authentication, session management, social login integration, multi-factor authentication, and authorization tokens. This service is the security foundation for the entire platform.
+The Auth Service is the primary authentication and authorization component of the xShop.ai platform. It handles user authentication, session management, social login integration, multi-factor authentication, and authorization tokens. This service is the security foundation for the entire platform.
 
 ## Supported Versions
 
@@ -256,7 +256,7 @@ SESSION_TIMEOUT=30m
 COOKIE_SECURE=true
 
 # MFA Configuration
-MFA_ISSUER=AIOutlet
+MFA_ISSUER=xShop.ai
 MFA_REQUIRED_FOR_ADMIN=true
 
 # OAuth Providers

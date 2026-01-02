@@ -1,7 +1,7 @@
 {
   "name": "auth-service",
   "version": "1.0.0",
-  "description": "Authentication and authorization microservice for AIOutlet platform.",
+  "description": "Authentication and authorization microservice for xShop.ai platform.",
   "main": "src/server.js",
   "type": "module",
   "repository": {
