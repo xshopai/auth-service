@@ -168,7 +168,7 @@ async function generateTraffic() {
   console.log('   URL: http://localhost:15672');
   console.log('   Username: admin');
   console.log('   Password: admin');
-  console.log('   Navigate to: Exchanges → aioutlet.events → Publish message\n');
+  console.log('   Navigate to: Exchanges → xshopai.events → Publish message\n');
 }
 
 // Run the traffic generator

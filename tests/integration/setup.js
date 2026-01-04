@@ -41,9 +41,9 @@ export async function setupTestEnvironment() {
     rabbitmqChannel = await rabbitmqConnection.createChannel();
 
     // Setup test exchange and queue
-    await rabbitmqChannel.assertExchange('aioutlet.events', 'topic', { durable: true });
+    await rabbitmqChannel.assertExchange('xshopai.events', 'topic', { durable: true });
     await rabbitmqChannel.assertQueue('test-notification-queue', { exclusive: false, durable: false });
-    await rabbitmqChannel.bindQueue('test-notification-queue', 'aioutlet.events', 'auth.*');
+    await rabbitmqChannel.bindQueue('test-notification-queue', 'xshopai.events', 'auth.*');
 
     console.log('✅ RabbitMQ container ready');
     console.log('🎉 Test environment ready!\n');

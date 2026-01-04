@@ -1,15 +1,15 @@
 {
   "name": "auth-service",
   "version": "1.0.0",
-  "description": "Authentication and authorization microservice for xShop.ai platform.",
+  "description": "Authentication and authorization microservice for xshop.ai platform.",
   "main": "src/server.js",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aioutlet/auth-service.git"
+    "url": "git+https://github.com/xshopai/auth-service.git"
   },
   "keywords": [
-    "aioutlet",
+    "xshopai",
     "auth",
     "microservice",
     "node",
@@ -18,9 +18,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aioutlet/auth-service/issues"
+    "url": "https://github.com/xshopai/auth-service/issues"
   },
-  "homepage": "https://github.com/aioutlet/auth-service#readme",
+  "homepage": "https://github.com/xshopai/auth-service#readme",
   "scripts": {
     "start": "dapr run --app-id auth-service --app-port 1004 --dapr-http-port 3504 --dapr-grpc-port 50004 --log-level warn --config ./.dapr/config.yaml --resources-path ./.dapr/components -- node src/server.js",
     "dev": "dapr run --app-id auth-service --app-port 1004 --dapr-http-port 3504 --dapr-grpc-port 50004 --log-level warn --config ./.dapr/config.yaml --resources-path ./.dapr/components -- nodemon src/server.js",

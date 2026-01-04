@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Auth Service is the primary authentication and authorization component of the xShop.ai platform. It handles user authentication, session management, social login integration, multi-factor authentication, and authorization tokens. This service is the security foundation for the entire platform.
+The Auth Service is the primary authentication and authorization component of the xshop.ai platform. It handles user authentication, session management, social login integration, multi-factor authentication, and authorization tokens. This service is the security foundation for the entire platform.
 
 ## Supported Versions
 
@@ -189,7 +189,7 @@ Authentication vulnerabilities require immediate attention:
 
 1. **Do NOT** open a public issue
 2. **Do NOT** test on production systems
-3. **Email** our security team at: <security@aioutlet.com>
+3. **Email** our security team at: <security@xshopai.com>
 
 ### Critical Security Areas
 
@@ -256,7 +256,7 @@ SESSION_TIMEOUT=30m
 COOKIE_SECURE=true
 
 # MFA Configuration
-MFA_ISSUER=xShop.ai
+MFA_ISSUER=xshop.ai
 MFA_REQUIRED_FOR_ADMIN=true
 
 # OAuth Providers
@@ -330,7 +330,7 @@ The Auth Service adheres to:
 
 For security-related questions or concerns:
 
-- **Email**: <security@aioutlet.com>
+- **Email**: <security@xshopai.com>
 - **Emergency**: Include "URGENT AUTH SECURITY" in subject line
 - **OAuth Issues**: Coordinate with respective identity providers
 
