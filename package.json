@@ -1,7 +1,7 @@
 {
   "name": "auth-service",
   "version": "1.0.0",
-  "description": "Authentication and authorization microservice for xshop.ai platform.",
+  "description": "Authentication and authorization microservice for xshopai platform.",
   "main": "src/server.js",
   "type": "module",
   "repository": {

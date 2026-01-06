@@ -1,6 +1,6 @@
 # 🔐 Auth Service
 
-Authentication and authorization microservice for xshop.ai - handles user authentication, JWT token management, session handling, and access control.
+Authentication and authorization microservice for xshopai - handles user authentication, JWT token management, session handling, and access control.
 
 ## 🚀 Quick Start
 

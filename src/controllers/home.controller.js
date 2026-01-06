@@ -2,7 +2,7 @@ export function info(req, res) {
   res.json({
     message: 'Welcome to the Auth Service',
     service: process.env.NAME || 'auth-service',
-    description: 'Authentication and authorization service for xshop.ai platform',
+    description: 'Authentication and authorization service for xshopai platform',
     environment: process.env.NODE_ENV || 'development',
   });
 }

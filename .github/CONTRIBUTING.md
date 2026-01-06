@@ -1,6 +1,6 @@
-# Contributing to xshop.ai Auth Service
+# Contributing to xshopai Auth Service
 
-We welcome contributions to the xshop.ai Auth Service project! By contributing, you can help improve the project and make it more useful for everyone.
+We welcome contributions to the xshopai Auth Service project! By contributing, you can help improve the project and make it more useful for everyone.
 
 ## How to Contribute
 
