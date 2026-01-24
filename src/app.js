@@ -5,6 +5,7 @@ import { validateConfig } from './validators/config.validator.js';
 import config from './core/config.js';
 import logger from './core/logger.js';
 import authRoutes from './routes/auth.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 import homeRoutes from './routes/home.routes.js';
 import operationalRoutes from './routes/operational.routes.js';
 import { traceContextMiddleware } from './middlewares/traceContext.middleware.js';
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use('/', homeRoutes);
 app.use('/', operationalRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin/auth', adminRoutes);
 
 // Centralized error handler (must be last)
 app.use(errorHandler);

@@ -38,6 +38,5 @@ router.get('/config/jwt', async (req, res, next) => {
 router.post('/register', authController.register);
 router.route('/reactivate').post(authController.requestAccountReactivation).get(authController.reactivateAccount);
 router.delete('/account', authMiddleware, authController.deleteAccount);
-router.delete('/users/:id', authMiddleware, authorizeRoles('admin'), authController.adminDeleteUser);
 
 export default router;
