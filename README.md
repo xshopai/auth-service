@@ -1,136 +1,307 @@
+<div align="center">
+
 # 🔐 Auth Service
 
-Authentication and authorization microservice for xshopai - handles user authentication, JWT token management, session handling, and access control.
+**Enterprise-grade authentication microservice for the xshopai e-commerce platform**
 
-## 🚀 Quick Start
+[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+[![Express](https://img.shields.io/badge/Express-5.1+-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
+[![Dapr](https://img.shields.io/badge/Dapr-Enabled-0D597F?style=for-the-badge&logo=dapr&logoColor=white)](https://dapr.io)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+[Getting Started](#-getting-started) •
+[Documentation](#-documentation) •
+[API Reference](docs/PRD.md) •
+[Contributing](#-contributing)
+
+</div>
+
+---
+
+## 🎯 Overview
+
+The **Auth Service** is a critical microservice responsible for user authentication, JWT token management, session handling, and access control across the xshopai platform. Built with scalability and reliability in mind, it supports multi-cloud deployments and integrates seamlessly with the broader microservices ecosystem.
+
+---
+
+## ✨ Key Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🔑 Authentication
+
+- JWT token generation & validation
+- User login & registration flows
+- Token refresh mechanism
+- Session management
+
+</td>
+<td width="50%">
+
+### 🛡️ Security
+
+- Password hashing (bcrypt)
+- Rate limiting protection
+- Role-based access control (RBAC)
+- Comprehensive audit logging
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### 📡 Event-Driven Architecture
+
+- CloudEvents 1.0 specification
+- Pub/sub messaging via Dapr
+- Auth event publishing
+- Cross-service synchronization
+
+</td>
+<td width="50%">
+
+### 🔒 Token Management
+
+- Access & refresh tokens
+- Token blacklisting support
+- Configurable expiration
+- Secure token storage
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- **Node.js** 20+ ([Download](https://nodejs.org/))
-- **Dapr CLI** 1.16+ ([Install Guide](https://docs.dapr.io/getting-started/install-dapr-cli/))
+- Node.js 20+
+- Docker & Docker Compose (optional)
+- Dapr CLI (for production-like setup)
 
-### Setup
+### Quick Start with Docker Compose
 
-**1. Clone & Install**
 ```bash
+# Clone the repository
 git clone https://github.com/xshopai/auth-service.git
 cd auth-service
+
+# Start all services
+docker-compose up -d
+
+# Verify the service is healthy
+curl http://localhost:1004/health
+```
+
+### Local Development Setup
+
+<details>
+<summary><b>🔧 Without Dapr (Simple Setup)</b></summary>
+
+```bash
+# Install dependencies
 npm install
-```
 
-**2. Configure Environment**
-```bash
-# Copy environment template
+# Set up environment variables
 cp .env.example .env
+# Edit .env with your configuration
 
-# Edit .env - update these values:
-# JWT_SECRET=your-secret-key-change-in-production
-# JWT_ALGORITHM=HS256
-# JWT_EXPIRATION=3600
-```
-
-**3. Initialize Dapr**
-```bash
-# First time only
-dapr init
-```
-
-**4. Run Service**
-```bash
-# Start with Dapr (recommended)
+# Start the service
 npm run dev
+```
+
+📖 See [Local Development Guide](docs/LOCAL_DEVELOPMENT.md) for detailed instructions.
+
+</details>
+
+<details>
+<summary><b>⚡ With Dapr (Production-like)</b></summary>
+
+```bash
+# Ensure Dapr is initialized
+dapr init
+
+# Start with Dapr sidecar
+npm run dev:dapr
 
 # Or use platform-specific scripts
 ./run.sh       # Linux/Mac
 .\run.ps1      # Windows
 ```
 
-**5. Verify**
-```bash
-# Check health
-curl http://localhost:1004/health
+📖 See [Dapr Development Guide](docs/LOCAL_DEVELOPMENT_DAPR.md) for detailed instructions.
 
-# Should return: {"status":"UP","service":"auth-service"...}
+</details>
 
-# Via Dapr
-curl http://localhost:3504/v1.0/invoke/auth-service/method/health
-```
-
-### Common Commands
-
-```bash
-# Run tests
-npm test
-
-# Run with coverage
-npm run test:coverage
-
-# Lint code
-npm run lint
-
-# Debug mode
-npm run dev:debug
-
-# Production mode
-npm start
-```
+---
 
 ## 📚 Documentation
 
-| Document | Description |
-|----------|-------------|
-| [📖 Developer Guide](docs/DEVELOPER_GUIDE.md) | Local setup, debugging, daily workflows |
-| [📘 Technical Reference](docs/TECHNICAL.md) | Architecture, security, monitoring |
-| [🤝 Contributing](docs/CONTRIBUTING.md) | Contribution guidelines and workflow |
+| Document                                                         | Description                                          |
+| :--------------------------------------------------------------- | :--------------------------------------------------- |
+| 📘 [Local Development](docs/LOCAL_DEVELOPMENT.md)                | Step-by-step local setup without Dapr                |
+| ⚡ [Local Development with Dapr](docs/LOCAL_DEVELOPMENT_DAPR.md) | Local setup with full Dapr integration               |
+| 📋 [Product Requirements](docs/PRD.md)                           | Complete API specification and business requirements |
+| 🏗️ [Architecture](docs/ARCHITECTURE.md)                          | System design, patterns, and data flows              |
+| 🔐 [Security](.github/SECURITY.md)                               | Security policies and vulnerability reporting        |
 
-**API Documentation**: See `src/routes/` for endpoint definitions and `tests/integration/` for API contract examples.
+---
 
-## ⚙️ Configuration
+## 🧪 Testing
 
-### Required Environment Variables
+We maintain high code quality standards with comprehensive test coverage.
 
 ```bash
-# Service
-NODE_ENV=development              # Environment: development, production, test
-PORT=1004                         # HTTP server port
+# Run all tests
+npm test
 
-# Security
-JWT_SECRET=your-secret-key        # JWT signing secret (32+ characters)
-JWT_ALGORITHM=HS256               # JWT algorithm
-JWT_EXPIRATION=3600               # Token expiration (seconds)
+# Run unit tests only
+npm run test:unit
 
-# Dapr
-DAPR_HTTP_PORT=3504              # Dapr sidecar HTTP port
-DAPR_GRPC_PORT=50004             # Dapr sidecar gRPC port
-DAPR_APP_ID=auth-service         # Dapr application ID
+# Run integration tests
+npm run test:integration
+
+# Run with coverage report
+npm run test:coverage
+
+# Run tests in watch mode
+npm run test:watch
 ```
 
-See [.env.example](.env.example) for complete configuration options.
+### Test Coverage
 
-## ✨ Key Features
+| Metric        | Status               |
+| :------------ | :------------------- |
+| Unit Tests    | ✅ Passing           |
+| Code Coverage | ✅ Target 80%+       |
+| Security Scan | ✅ 0 vulnerabilities |
 
-- JWT token generation and validation
-- User authentication and login
-- Token refresh mechanism
-- Session management
-- Role-based access control (RBAC)
-- Password validation and security
-- Rate limiting for authentication endpoints
-- Comprehensive audit logging
-- Multi-factor authentication support (future)
+---
 
-## 🔗 Related Services
+## 🏗️ Project Structure
 
-- [user-service](https://github.com/xshopai/user-service) - User profile management
-- [admin-service](https://github.com/xshopai/admin-service) - Admin operations
-- [audit-service](https://github.com/xshopai/audit-service) - Audit logging
+```
+auth-service/
+├── 📁 src/                       # Application source code
+│   ├── 📁 controllers/           # REST API endpoints
+│   ├── 📁 middlewares/           # Authentication, logging, tracing
+│   ├── 📁 validators/            # Input validation
+│   ├── 📁 routes/                # Route definitions
+│   ├── 📁 clients/               # External service clients
+│   └── 📁 core/                  # Config, logger, errors
+├── 📁 tests/                     # Test suite
+│   ├── 📁 unit/                  # Unit tests
+│   ├── 📁 integration/           # Integration tests
+│   └── 📁 e2e/                   # End-to-end tests
+├── 📁 .dapr/                     # Dapr configuration
+│   ├── 📁 components/            # Pub/sub, secrets, state stores
+│   └── 📄 config.yaml            # Dapr runtime configuration
+├── 📁 docs/                      # Documentation
+├── 📄 docker-compose.yml         # Local containerized environment
+├── 📄 Dockerfile                 # Production container image
+└── 📄 package.json               # Node.js dependencies
+```
+
+---
+
+## 🔧 Technology Stack
+
+| Category          | Technology                           |
+| :---------------- | :----------------------------------- |
+| 🟢 Runtime        | Node.js 20+                          |
+| 🌐 Framework      | Express 5.1+                         |
+| 📨 Messaging      | Dapr Pub/Sub (RabbitMQ backend)      |
+| 📋 Event Format   | CloudEvents 1.0 Specification        |
+| 🔐 Authentication | JWT Tokens + bcrypt password hashing |
+| 🧪 Testing        | Jest with coverage reporting         |
+| 📊 Observability  | Winston structured logging           |
+
+---
+
+## ⚡ Quick Reference
+
+```bash
+# 🐳 Docker Compose
+docker-compose up -d              # Start all services
+docker-compose down               # Stop all services
+docker-compose logs -f auth       # View logs
+
+# 🟢 Local Development
+npm run dev                       # Run without Dapr
+npm run dev:dapr                  # Run with Dapr sidecar
+npm run debug:dapr                # Debug with Dapr
+
+# 🧪 Testing
+npm test                          # Run all tests
+npm run test:unit                 # Run unit tests
+npm run test:coverage             # Run with coverage
+
+# 🔍 Health Check
+curl http://localhost:1004/health
+curl http://localhost:1004/health/ready
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. **Fork** the repository
+2. **Create** a feature branch
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Write** tests for your changes
+4. **Run** the test suite
+   ```bash
+   npm test && npm run lint
+   ```
+5. **Commit** your changes
+   ```bash
+   git commit -m 'feat: add amazing feature'
+   ```
+6. **Push** to your branch
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+7. **Open** a Pull Request
+
+Please ensure your PR:
+
+- ✅ Passes all existing tests
+- ✅ Includes tests for new functionality
+- ✅ Follows the existing code style
+- ✅ Updates documentation as needed
+
+---
+
+## 🆘 Support
+
+| Resource         | Link                                                                      |
+| :--------------- | :------------------------------------------------------------------------ |
+| 🐛 Bug Reports   | [GitHub Issues](https://github.com/xshopai/auth-service/issues)           |
+| 📖 Documentation | [docs/](docs/)                                                            |
+| 📋 API Reference | [docs/PRD.md](docs/PRD.md)                                                |
+| 💬 Discussions   | [GitHub Discussions](https://github.com/xshopai/auth-service/discussions) |
+
+---
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE)
+This project is part of the **xshopai** e-commerce platform.  
+Licensed under the MIT License - see [LICENSE](LICENSE) for details.
 
-## 📞 Support
+---
 
-- **Issues**: [GitHub Issues](https://github.com/xshopai/auth-service/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/xshopai/auth-service/discussions)
-- **Documentation**: [docs/](docs/)
+<div align="center">
+
+**[⬆ Back to Top](#-auth-service)**
+
+Made with ❤️ by the xshopai team
+
+</div>
