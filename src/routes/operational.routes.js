@@ -20,18 +20,18 @@ const router = express.Router();
 router.get('/health', health);
 
 /**
- * @route   GET /readiness
+ * @route   GET /health/ready
  * @desc    Readiness probe - checks if service is ready to receive traffic
  * @access  Public (no auth required)
  */
-router.get('/readiness', readiness);
+router.get('/health/ready', readiness);
 
 /**
- * @route   GET /liveness
+ * @route   GET /health/live
  * @desc    Liveness probe - checks if service is alive (not deadlocked)
  * @access  Public (no auth required)
  */
-router.get('/liveness', liveness);
+router.get('/health/live', liveness);
 
 /**
  * @route   GET /metrics
