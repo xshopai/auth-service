@@ -253,14 +253,10 @@ az containerapp create \
     "VERSION=1.0.0" \
     "DAPR_PUBSUB_NAME=event-bus" \
     "DAPR_HTTP_PORT=3500" \
-    "DAPR_USER_SERVICE_APP_ID=user-service" \
     "LOG_LEVEL=info"
 ```
 
-> **Note**:
->
-> - `DAPR_USER_SERVICE_APP_ID` is required for Dapr service invocation to user-service
-> - JWT secrets should be configured via Azure Key Vault with Dapr secret store for production environments
+> **Note**: JWT secrets should be configured via Azure Key Vault with Dapr secret store for production environments.
 
 ### Step 12: Configure Dapr Component in Container Apps
 
