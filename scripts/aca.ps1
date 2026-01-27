@@ -59,7 +59,7 @@ Write-Header "Configuration"
 # Service-specific configuration
 $ServiceName = "auth-service"
 $ServiceVersion = "1.0.0"
-$AppPort = 8003
+$AppPort = 8004
 $ProjectName = "xshopai"
 
 # Dapr configuration
