@@ -7,13 +7,20 @@
       "command": "dapr",
       "args": [
         "run",
-        "--app-id", "auth-service",
-        "--app-port", "8004",
-        "--dapr-http-port", "3504",
-        "--dapr-grpc-port", "50004",
-        "--resources-path", ".dapr/components",
-        "--config", ".dapr/config.yaml",
-        "--log-level", "warn"
+        "--app-id",
+        "auth-service",
+        "--app-port",
+        "8004",
+        "--dapr-http-port",
+        "3504",
+        "--dapr-grpc-port",
+        "50004",
+        "--resources-path",
+        ".dapr/components",
+        "--config",
+        ".dapr/config.yaml",
+        "--log-level",
+        "warn"
       ],
       "isBackground": true,
       "presentation": {
