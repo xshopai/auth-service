@@ -94,7 +94,7 @@ cd auth-service
 docker-compose up -d
 
 # Verify the service is healthy
-curl http://localhost:1004/health
+curl http://localhost:8003/health
 ```
 
 ### Local Development Setup
@@ -241,8 +241,8 @@ npm run test:unit                 # Run unit tests
 npm run test:coverage             # Run with coverage
 
 # 🔍 Health Check
-curl http://localhost:1004/health
-curl http://localhost:1004/health/ready
+curl http://localhost:8003/health
+curl http://localhost:8003/health/ready
 ```
 
 ---

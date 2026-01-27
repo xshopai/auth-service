@@ -161,7 +161,7 @@ Create a `.env` file in the auth-service root:
 ```env
 # Service Configuration
 NODE_ENV=development
-PORT=1004
+PORT=8003
 HOST=0.0.0.0
 NAME=auth-service
 VERSION=1.0.0

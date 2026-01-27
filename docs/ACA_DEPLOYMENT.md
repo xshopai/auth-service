@@ -237,7 +237,7 @@ az containerapp create \
   --registry-server $ACR_LOGIN_SERVER \
   --registry-username $ACR_NAME \
   --registry-password $ACR_PASSWORD \
-  --target-port 1004 \
+  --target-port 8003 \
   --ingress external \
   --min-replicas 1 \
   --max-replicas 5 \
@@ -245,10 +245,10 @@ az containerapp create \
   --memory 1.0Gi \
   --enable-dapr \
   --dapr-app-id auth-service \
-  --dapr-app-port 1004 \
+  --dapr-app-port 8003 \
   --env-vars \
     "NODE_ENV=production" \
-    "PORT=1004" \
+    "PORT=8003" \
     "NAME=auth-service" \
     "VERSION=1.0.0" \
     "DAPR_PUBSUB_NAME=event-bus" \
@@ -394,7 +394,7 @@ az containerapp update \
   --resource-group $RESOURCE_GROUP \
   --set-env-vars \
     "NODE_ENV=production" \
-    "PORT=1004" \
+    "PORT=8003" \
     "NAME=auth-service" \
     "VERSION=1.0.0" \
     "DAPR_PUBSUB_NAME=event-bus" \

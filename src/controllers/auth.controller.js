@@ -239,7 +239,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
         new ErrorResponse(passwordValidation.error, 400, {
           field: 'password',
           requirements: passwordValidation.details,
-        })
+        }),
       );
     }
     return next(new ErrorResponse(passwordValidation.error, 400));
@@ -406,6 +406,17 @@ export const verify = asyncHandler((req, res) => {
  */
 export const register = asyncHandler(async (req, res, next) => {
   const { email, password, firstName, lastName, phoneNumber } = req.body;
+
+  // DEBUG: Log full request body to troubleshoot missing fields
+  logger.debug('Registration request body received', {
+    bodyKeys: Object.keys(req.body),
+    hasFirstName: !!firstName,
+    hasLastName: !!lastName,
+    firstNameType: typeof firstName,
+    lastNameType: typeof lastName,
+    rawBody: JSON.stringify(req.body),
+    traceId: req.traceId,
+  });
 
   // Log registration attempt
   logger.info('User registration started', {

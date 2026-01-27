@@ -8,7 +8,7 @@
       "args": [
         "run",
         "--app-id", "auth-service",
-        "--app-port", "1004",
+        "--app-port", "8004",
         "--dapr-http-port", "3504",
         "--dapr-grpc-port", "50004",
         "--resources-path", ".dapr/components",

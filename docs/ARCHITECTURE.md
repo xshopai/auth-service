@@ -78,7 +78,7 @@ The Auth Service is the central authentication and authorization gateway for the
 | Authentication   | JWT (HS256)                     |
 | Messaging        | Dapr Pub/Sub (RabbitMQ backend) |
 | Secret Store     | Dapr Secret Store               |
-| Main Port        | 1004                            |
+| Main Port        | 8003                            |
 | Dapr HTTP Port   | 3504                            |
 | Dapr gRPC Port   | 50004                           |
 
@@ -581,7 +581,7 @@ spec:
 | Variable                 | Description                | Default                         | Required |
 | ------------------------ | -------------------------- | ------------------------------- | -------- |
 | NODE_ENV                 | Environment                | development                     | No       |
-| PORT                     | HTTP server port           | 1004                            | No       |
+| PORT                     | HTTP server port           | 8003                            | No       |
 | HOST                     | HTTP server host           | 0.0.0.0                         | No       |
 | NAME                     | Service name               | auth-service                    | No       |
 | VERSION                  | Service version            | 1.0.0                           | No       |
@@ -794,12 +794,11 @@ Auth Service uses W3C Trace Context via Dapr:
 
 ### 8.1 Deployment Targets
 
-| Target                   | Configuration                   |
-| ------------------------ | ------------------------------- |
-| Local Development        | Node.js + Dapr CLI              |
-| Docker                   | Dockerfile + docker-compose.yml |
-| Azure Container Apps     | See ACA_DEPLOYMENT.md           |
-| Azure Kubernetes Service | See AKS_DEPLOYMENT.md           |
+| Target               | Configuration                   |
+| -------------------- | ------------------------------- |
+| Local Development    | Node.js + Dapr CLI              |
+| Docker               | Dockerfile + docker-compose.yml |
+| Azure Container Apps | See ACA_DEPLOYMENT.md           |
 
 **Docker Compose (local):**
 
@@ -812,7 +811,7 @@ docker-compose up -d
 ```bash
 npm run dev
 # or
-dapr run --app-id auth-service --app-port 1004 --dapr-http-port 3504 \
+dapr run --app-id auth-service --app-port 8003 --dapr-http-port 3504 \
   --resources-path ./.dapr/components --config ./.dapr/config.yaml \
   -- node src/server.js
 ```

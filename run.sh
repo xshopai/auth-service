@@ -3,7 +3,7 @@
 # Usage: ./run.sh
 
 echo -e "\033[0;32mStarting Auth Service with Dapr...\033[0m"
-echo -e "\033[0;36mService will be available at: http://localhost:1004\033[0m"
+echo -e "\033[0;36mService will be available at: http://localhost:8004\033[0m"
 echo -e "\033[0;36mDapr HTTP endpoint: http://localhost:3504\033[0m"
 echo -e "\033[0;36mDapr gRPC endpoint: localhost:50004\033[0m"
 echo ""
@@ -13,7 +13,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 dapr run \
   --app-id auth-service \
-  --app-port 1004 \
+  --app-port 8004 \
   --dapr-http-port 3504 \
   --dapr-grpc-port 50004 \
   --resources-path "$SCRIPT_DIR/.dapr/components" \

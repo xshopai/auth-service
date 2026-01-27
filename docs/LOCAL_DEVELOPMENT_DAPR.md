@@ -141,7 +141,7 @@ npm run dapr:dev
 
 **Auth Service Dapr Ports:**
 
-- App Port: 1004
+- App Port: 8003
 - Dapr HTTP: 3504
 - Dapr gRPC: 50004
 
@@ -160,7 +160,7 @@ This runs the following Dapr command:
 ```bash
 dapr run \
   --app-id auth-service \
-  --app-port 1004 \
+  --app-port 8003 \
   --dapr-http-port 3504 \
   --dapr-grpc-port 50004 \
   --resources-path ./.dapr/components \
@@ -180,7 +180,7 @@ dapr run \
 ```bash
 dapr run \
   --app-id auth-service \
-  --app-port 1004 \
+  --app-port 8003 \
   --dapr-http-port 3504 \
   --resources-path ./.dapr/components \
   --config ./.dapr/config.yaml \
@@ -195,7 +195,7 @@ dapr run \
 [INFO] auth-service: Auth Service v1.0.0 starting...
 [INFO] auth-service: Environment: development
 [INFO] auth-service: Dapr mode enabled
-[INFO] auth-service: Server listening on http://0.0.0.0:1004
+[INFO] auth-service: Server listening on http://0.0.0.0:8003
 ```
 
 ### Stopping the Service
@@ -215,7 +215,7 @@ dapr stop --app-id auth-service
 ### Via Application Port (Direct)
 
 ```bash
-curl http://localhost:1004/health
+curl http://localhost:8003/health
 ```
 
 ### Via Dapr Sidecar (Service Invocation)
@@ -227,7 +227,7 @@ curl http://localhost:3504/v1.0/invoke/auth-service/method/health
 ### User Login (Direct)
 
 ```bash
-curl -X POST http://localhost:1004/api/auth/login \
+curl -X POST http://localhost:8003/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -266,7 +266,7 @@ After a successful login, you should see the `auth.login` event in RabbitMQ.
 
 ```bash
 # 1. Login
-curl -X POST http://localhost:1004/api/auth/login \
+curl -X POST http://localhost:8003/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "test@example.com", "password": "SecurePass123"}'
 
@@ -305,7 +305,7 @@ curl -X POST http://localhost:1004/api/auth/login \
         "--app-id",
         "auth-service",
         "--app-port",
-        "1004",
+        "8003",
         "--dapr-http-port",
         "3504",
         "--dapr-grpc-port",
@@ -386,7 +386,7 @@ cat .dapr/secrets.json
 dapr list
 
 # Should show both services:
-# auth-service  1004  3504  ...
+# auth-service  8003  3504  ...
 # user-service  8002  3502  ...
 ```
 
@@ -397,10 +397,10 @@ dapr list
 ```bash
 # Find process on port
 # Windows
-netstat -ano | findstr :1004
+netstat -ano | findstr :8003
 
 # macOS/Linux
-lsof -i :1004
+lsof -i :8003
 
 # Kill process or use different port
 kill -9 <PID>
@@ -422,7 +422,7 @@ app.use(traceContextMiddleware);
 
 | Service      | App Port | Dapr HTTP | Dapr gRPC |
 | ------------ | -------- | --------- | --------- |
-| Auth Service | 1004     | 3504      | 50004     |
+| Auth Service | 8003     | 3504      | 50004     |
 | User Service | 8002     | 3502      | 50002     |
 
 ---

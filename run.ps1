@@ -7,14 +7,14 @@ $host.ui.RawUI.WindowTitle = "Auth Service"
 [Console]::Title = "Auth Service"
 
 Write-Host "Starting Auth Service with Dapr..." -ForegroundColor Green
-Write-Host "Service will be available at: http://localhost:1004" -ForegroundColor Cyan
+Write-Host "Service will be available at: http://localhost:8004" -ForegroundColor Cyan
 Write-Host "Dapr HTTP endpoint: http://localhost:3504" -ForegroundColor Cyan
 Write-Host "Dapr gRPC endpoint: localhost:50004" -ForegroundColor Cyan
 Write-Host ""
 
 dapr run `
   --app-id auth-service `
-  --app-port 1004 `
+  --app-port 8004 `
   --dapr-http-port 3504 `
   --dapr-grpc-port 50004 `
   --resources-path .dapr/components `

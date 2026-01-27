@@ -51,7 +51,7 @@ cd ../auth-service
 npm run dev
 ```
 
-The service will be available at: **http://localhost:1004**
+The service will be available at: **http://localhost:8003**
 
 ---
 
@@ -64,7 +64,7 @@ Create a `.env` file in the auth-service root:
 ```env
 # Service Configuration
 NODE_ENV=development
-PORT=1004
+PORT=8003
 HOST=0.0.0.0
 NAME=auth-service
 VERSION=1.0.0
@@ -125,7 +125,7 @@ npm start
 ```
 [INFO] auth-service: Auth Service v1.0.0 starting...
 [INFO] auth-service: Environment: development
-[INFO] auth-service: Server listening on http://0.0.0.0:1004
+[INFO] auth-service: Server listening on http://0.0.0.0:8003
 ```
 
 ---
@@ -135,7 +135,7 @@ npm start
 ### Health Check
 
 ```bash
-curl http://localhost:1004/health
+curl http://localhost:8003/health
 ```
 
 **Expected Response:**
@@ -152,7 +152,7 @@ curl http://localhost:1004/health
 ### User Registration
 
 ```bash
-curl -X POST http://localhost:1004/api/auth/register \
+curl -X POST http://localhost:8003/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -165,7 +165,7 @@ curl -X POST http://localhost:1004/api/auth/register \
 ### User Login
 
 ```bash
-curl -X POST http://localhost:1004/api/auth/login \
+curl -X POST http://localhost:8003/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -195,14 +195,14 @@ curl -X POST http://localhost:1004/api/auth/login \
 # Use the token from login response
 TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
-curl http://localhost:1004/api/auth/verify \
+curl http://localhost:8003/api/auth/verify \
   -H "Authorization: Bearer $TOKEN"
 ```
 
 ### Get Current User
 
 ```bash
-curl http://localhost:1004/api/auth/me \
+curl http://localhost:8003/api/auth/me \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -261,16 +261,16 @@ rm -rf node_modules
 npm install
 ```
 
-**Issue:** `Error: EADDRINUSE: address already in use :::1004`
+**Issue:** `Error: EADDRINUSE: address already in use :::8003`
 
 ```bash
-# Find and kill process on port 1004
+# Find and kill process on port 8003
 # Windows
-netstat -ano | findstr :1004
+netstat -ano | findstr :8003
 taskkill /F /PID <PID>
 
 # Linux/macOS
-lsof -i :1004
+lsof -i :8003
 kill -9 <PID>
 ```
 
