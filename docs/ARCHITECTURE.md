@@ -79,8 +79,10 @@ The Auth Service is the central authentication and authorization gateway for the
 | Messaging        | Dapr Pub/Sub (RabbitMQ backend) |
 | Secret Store     | Dapr Secret Store               |
 | Main Port        | 8003                            |
-| Dapr HTTP Port   | 3504                            |
-| Dapr gRPC Port   | 50004                           |
+| Dapr HTTP Port   | 3500                            |
+| Dapr gRPC Port   | 50001                           |
+
+> **Note:** All services now use the standard Dapr ports (3500 for HTTP, 50001 for gRPC). This simplifies configuration and works consistently whether running via Docker Compose or individual service runs.
 
 ### 1.4 Directory Structure
 
@@ -813,7 +815,7 @@ docker-compose up -d
 ```bash
 npm run dev
 # or
-dapr run --app-id auth-service --app-port 8003 --dapr-http-port 3504 \
+dapr run --app-id auth-service --app-port 8003 --dapr-http-port 3500 \
   --resources-path ./.dapr/components --config ./.dapr/config.yaml \
   -- node src/server.js
 ```

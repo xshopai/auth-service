@@ -128,8 +128,10 @@ npm run dapr:dev
 **User Service Dapr Ports:**
 
 - App Port: 8002
-- Dapr HTTP: 3502
-- Dapr gRPC: 50002
+- Dapr HTTP: 3500
+- Dapr gRPC: 50001
+
+> **Note:** All services now use the standard Dapr ports (3500 for HTTP, 50001 for gRPC). This simplifies configuration and works consistently whether running via Docker Compose or individual service runs.
 
 ### Step 3: Start Auth Service with Dapr
 
@@ -142,8 +144,8 @@ npm run dapr:dev
 **Auth Service Dapr Ports:**
 
 - App Port: 8003
-- Dapr HTTP: 3504
-- Dapr gRPC: 50004
+- Dapr HTTP: 3500
+- Dapr gRPC: 50001
 
 ---
 
@@ -161,8 +163,8 @@ This runs the following Dapr command:
 dapr run \
   --app-id auth-service \
   --app-port 8003 \
-  --dapr-http-port 3504 \
-  --dapr-grpc-port 50004 \
+  --dapr-http-port 3500 \
+  --dapr-grpc-port 50001 \
   --resources-path ./.dapr/components \
   --config ./.dapr/config.yaml \
   --log-level warn \
@@ -181,7 +183,7 @@ dapr run \
 dapr run \
   --app-id auth-service \
   --app-port 8003 \
-  --dapr-http-port 3504 \
+  --dapr-http-port 3500 \
   --resources-path ./.dapr/components \
   --config ./.dapr/config.yaml \
   -- npm run dev
@@ -190,7 +192,7 @@ dapr run \
 **Expected Output:**
 
 ```
-ℹ️  Starting Dapr with id auth-service. HTTP Port: 3504
+ℹ️  Starting Dapr with id auth-service. HTTP Port: 3500
 ✅  You're up and running! Both Dapr and your app are running.
 [INFO] auth-service: Auth Service v1.0.0 starting...
 [INFO] auth-service: Environment: development
@@ -221,7 +223,7 @@ curl http://localhost:8003/health
 ### Via Dapr Sidecar (Service Invocation)
 
 ```bash
-curl http://localhost:3504/v1.0/invoke/auth-service/method/health
+curl http://localhost:3500/v1.0/invoke/auth-service/method/health
 ```
 
 ### User Login (Direct)
@@ -238,7 +240,7 @@ curl -X POST http://localhost:8003/api/auth/login \
 ### User Login (Via Dapr)
 
 ```bash
-curl -X POST http://localhost:3504/v1.0/invoke/auth-service/method/api/auth/login \
+curl -X POST http://localhost:3500/v1.0/invoke/auth-service/method/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -307,9 +309,9 @@ curl -X POST http://localhost:8003/api/auth/login \
         "--app-port",
         "8003",
         "--dapr-http-port",
-        "3504",
+        "3500",
         "--dapr-grpc-port",
-        "50004",
+        "50001",
         "--resources-path",
         "./.dapr/components",
         "--config",
@@ -386,8 +388,8 @@ cat .dapr/secrets.json
 dapr list
 
 # Should show both services:
-# auth-service  8003  3504  ...
-# user-service  8002  3502  ...
+# auth-service  8003  3500  ...
+# user-service  8002  3500  ...
 ```
 
 ### Port Conflicts
@@ -420,10 +422,12 @@ app.use(traceContextMiddleware);
 
 ## Service Ports Reference
 
+> **Note:** All services now use the standard Dapr ports (3500 for HTTP, 50001 for gRPC). This simplifies configuration and works consistently whether running via Docker Compose or individual service runs.
+
 | Service      | App Port | Dapr HTTP | Dapr gRPC |
 | ------------ | -------- | --------- | --------- |
-| Auth Service | 8003     | 3504      | 50004     |
-| User Service | 8002     | 3502      | 50002     |
+| Auth Service | 8003     | 3500      | 50001     |
+| User Service | 8002     | 3500      | 50001     |
 
 ---
 

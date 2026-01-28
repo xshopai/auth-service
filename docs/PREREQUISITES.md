@@ -147,8 +147,10 @@ npm run dapr:dev
 **User Service Ports:**
 
 - App Port: 8002
-- Dapr HTTP: 3502
-- Dapr gRPC: 50002
+- Dapr HTTP: 3500
+- Dapr gRPC: 50001
+
+> **Note:** All services now use the standard Dapr ports (3500 for HTTP, 50001 for gRPC). This simplifies configuration and works consistently whether running via Docker Compose or individual service runs.
 
 ---
 
