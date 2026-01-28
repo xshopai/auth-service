@@ -578,26 +578,28 @@ spec:
 
 ### 5.1 Environment Variables
 
-| Variable                 | Description                | Default                         | Required |
-| ------------------------ | -------------------------- | ------------------------------- | -------- |
-| NODE_ENV                 | Environment                | development                     | No       |
-| PORT                     | HTTP server port           | 8003                            | No       |
-| HOST                     | HTTP server host           | 0.0.0.0                         | No       |
-| NAME                     | Service name               | auth-service                    | No       |
-| VERSION                  | Service version            | 1.0.0                           | No       |
-| LOG_LEVEL                | Logging level              | debug                           | No       |
-| LOG_FORMAT               | Log format (console/json)  | console                         | No       |
-| DAPR_HTTP_PORT           | Dapr sidecar HTTP port     | 3504                            | No       |
-| DAPR_HOST                | Dapr sidecar host          | localhost                       | No       |
-| DAPR_PUBSUB_NAME         | Pub/sub component name     | event-bus                       | No       |
-| DAPR_APP_ID              | Dapr application ID        | auth-service                    | No       |
-| DAPR_USER_SERVICE_APP_ID | User service Dapr app ID   | user-service                    | No       |
-| USER_SERVICE_URL         | User service base URL      | http://localhost:8002/api/users | No       |
-| WEB_UI_BASE_URL          | Web UI base URL for links  | http://localhost:3000           | No       |
-| JWT_ALGORITHM            | JWT signing algorithm      | HS256                           | No       |
-| JWT_EXPIRATION           | Token expiration (seconds) | 3600                            | No       |
-| JWT_ISSUER               | JWT issuer claim           | auth-service                    | No       |
-| JWT_AUDIENCE             | JWT audience claim         | xshopai-platform                | No       |
+| Variable                 | Description                 | Default                         | Required |
+| ------------------------ | --------------------------- | ------------------------------- | -------- |
+| NODE_ENV                 | Environment                 | development                     | No       |
+| PORT                     | HTTP server port            | 8003                            | No       |
+| HOST                     | HTTP server host            | 0.0.0.0                         | No       |
+| NAME                     | Service name                | auth-service                    | No       |
+| VERSION                  | Service version             | 1.0.0                           | No       |
+| LOG_LEVEL                | Logging level               | debug                           | No       |
+| LOG_FORMAT               | Log format (console/json)   | console                         | No       |
+| DAPR_HTTP_PORT           | Dapr sidecar HTTP port      | 3500                            | No       |
+| DAPR_GRPC_PORT           | Dapr sidecar gRPC port      | 50001                           | No       |
+| DAPR_HOST                | Dapr sidecar host           | localhost                       | No       |
+| DAPR_PUBSUB_NAME         | Pub/sub component name      | pubsub                          | No       |
+| DAPR_SECRETSTORE_NAME    | Secret store component name | secretstore                     | No       |
+| DAPR_APP_ID              | Dapr application ID         | auth-service                    | No       |
+| DAPR_USER_SERVICE_APP_ID | User service Dapr app ID    | user-service                    | No       |
+| USER_SERVICE_URL         | User service base URL       | http://localhost:8002/api/users | No       |
+| WEB_UI_BASE_URL          | Web UI base URL for links   | http://localhost:3000           | No       |
+| JWT_ALGORITHM            | JWT signing algorithm       | HS256                           | No       |
+| JWT_EXPIRATION           | Token expiration (seconds)  | 3600                            | No       |
+| JWT_ISSUER               | JWT issuer claim            | auth-service                    | No       |
+| JWT_AUDIENCE             | JWT audience claim          | xshopai-platform                | No       |
 
 ### 5.2 Secret Management
 

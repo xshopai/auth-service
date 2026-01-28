@@ -265,7 +265,7 @@ az containerapp create \
 az containerapp env dapr-component set \
   --name $ENVIRONMENT_NAME \
   --resource-group $RESOURCE_GROUP \
-  --dapr-component-name event-bus \
+  --dapr-component-name pubsub \
   --yaml .dapr/components/dapr-servicebus-component.yaml
 ```
 
@@ -397,7 +397,8 @@ az containerapp update \
     "PORT=8003" \
     "NAME=auth-service" \
     "VERSION=1.0.0" \
-    "DAPR_PUBSUB_NAME=event-bus" \
+    "DAPR_PUBSUB_NAME=pubsub" \
+    "DAPR_SECRETSTORE_NAME=secretstore" \
     "DAPR_HTTP_PORT=3500" \
     "LOG_LEVEL=info" \
     "DAPR_USER_SERVICE_APP_ID=user-service"

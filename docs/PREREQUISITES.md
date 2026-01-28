@@ -171,7 +171,7 @@ LOG_LEVEL=debug
 LOG_FORMAT=console
 
 # Dapr Configuration
-DAPR_HTTP_PORT=3504
+DAPR_HTTP_PORT=3500
 DAPR_HOST=localhost
 DAPR_PUBSUB_NAME=event-bus
 DAPR_APP_ID=auth-service

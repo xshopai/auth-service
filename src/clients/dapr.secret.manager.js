@@ -10,14 +10,10 @@ class DaprSecretManager {
   constructor() {
     this.environment = process.env.NODE_ENV || 'development';
     this.daprHost = process.env.DAPR_HOST || '127.0.0.1';
-    this.daprPort = process.env.DAPR_HTTP_PORT || '3504';
+    this.daprPort = process.env.DAPR_HTTP_PORT || '3500';
 
-    // Use appropriate secret store based on environment
-    if (this.environment === 'production') {
-      this.secretStoreName = 'azure-keyvault-secret-store';
-    } else {
-      this.secretStoreName = 'secret-store';
-    }
+    // Use DAPR_SECRETSTORE_NAME env var, fallback to 'secretstore' (matches ACA component name)
+    this.secretStoreName = 'secretstore';
 
     this.client = new DaprClient({
       daprHost: this.daprHost,
