@@ -87,8 +87,8 @@ SERVICE_VERSION="1.0.0"
 APP_PORT=8003
 PROJECT_NAME="xshopai"
 
-# Dapr configuration
-DAPR_HTTP_PORT=3500
+# Dapr configuration (per PORT_CONFIGURATION.md: auth-service = 3504/50004)
+DAPR_HTTP_PORT=3504
 DAPR_PUBSUB_NAME="pubsub"
 
 # JWT configuration

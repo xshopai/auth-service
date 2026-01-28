@@ -62,8 +62,8 @@ $ServiceVersion = "1.0.0"
 $AppPort = 8004
 $ProjectName = "xshopai"
 
-# Dapr configuration
-$DaprHttpPort = 3500
+# Dapr configuration (per PORT_CONFIGURATION.md: auth-service = 3504/50004)
+$DaprHttpPort = 3504
 $DaprPubsubName = "pubsub"
 
 # JWT configuration
