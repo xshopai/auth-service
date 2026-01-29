@@ -84,7 +84,7 @@ print_header "Configuration"
 # Service-specific configuration
 SERVICE_NAME="auth-service"
 SERVICE_VERSION="1.0.0"
-APP_PORT=8003
+APP_PORT=8004
 PROJECT_NAME="xshopai"
 
 # Dapr configuration for Azure Container Apps
