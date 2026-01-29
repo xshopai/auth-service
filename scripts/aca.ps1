@@ -79,15 +79,14 @@ $ServiceDir = Split-Path -Parent $ScriptDir
 # ============================================================================
 Write-Host "Available Environments:" -ForegroundColor Cyan
 Write-Host "   dev     - Development environment"
-Write-Host "   staging - Staging/QA environment"
 Write-Host "   prod    - Production environment"
 Write-Host ""
 
-$Environment = Read-HostWithDefault -Prompt "Enter environment (dev/staging/prod)" -Default "dev"
+$Environment = Read-HostWithDefault -Prompt "Enter environment (dev/prod)" -Default "dev"
 
-if ($Environment -notmatch '^(dev|staging|prod)$') {
+if ($Environment -notmatch '^(dev|prod)$') {
     Write-Error "Invalid environment: $Environment"
-    Write-Host "   Valid values: dev, staging, prod"
+    Write-Host "   Valid values: dev, prod"
     exit 1
 }
 Write-Success "Environment: $Environment"
@@ -97,10 +96,6 @@ switch ($Environment) {
     "dev" {
         $NodeEnv = "development"
         $LogLevel = "debug"
-    }
-    "staging" {
-        $NodeEnv = "staging"
-        $LogLevel = "info"
     }
     "prod" {
         $NodeEnv = "production"
@@ -198,10 +193,10 @@ try {
 # ============================================================================
 Write-Header "JWT Secret Configuration"
 
-# Try to get JWT secret from Key Vault
+# Try to get JWT secret from Key Vault (using xshopai- prefix)
 Write-Info "Checking for JWT secret in Key Vault..."
 try {
-    $JwtSecret = az keyvault secret show --vault-name $KeyVault --name "jwt-secret" --query value -o tsv
+    $JwtSecret = az keyvault secret show --vault-name $KeyVault --name "xshopai-jwt-secret" --query value -o tsv
     Write-Success "JWT secret retrieved from Key Vault"
 } catch {
     Write-Warning "JWT secret not found in Key Vault"
@@ -211,7 +206,7 @@ try {
     # Store in Key Vault
     Write-Info "Storing JWT secret in Key Vault..."
     try {
-        az keyvault secret set --vault-name $KeyVault --name "jwt-secret" --value $JwtSecret --output none
+        az keyvault secret set --vault-name $KeyVault --name "xshopai-jwt-secret" --value $JwtSecret --output none
         Write-Success "JWT secret generated and stored"
     } catch {
         Write-Warning "Could not store JWT secret in Key Vault (will use generated value)"

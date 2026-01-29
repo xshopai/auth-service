@@ -1,11 +1,11 @@
 import { DaprClient, CommunicationProtocolEnum } from '@dapr/dapr';
 import logger from '../core/logger.js';
+import { getMessagingProvider } from '../messaging/index.js';
 
 const DAPR_HOST = process.env.DAPR_HOST || 'localhost';
 const DAPR_HTTP_PORT = process.env.DAPR_HTTP_PORT || '3500';
-const DAPR_PUBSUB_NAME = 'pubsub';
 
-// Initialize Dapr client
+// Initialize Dapr client for service invocation
 const daprClient = new DaprClient({
   daprHost: DAPR_HOST,
   daprPort: DAPR_HTTP_PORT,
@@ -53,7 +53,8 @@ export async function invokeService(appId, methodName, httpMethod = 'GET', data 
   }
 }
 /**
- * Publish an event to a topic via Dapr pub/sub
+ * Publish an event to a topic via messaging provider
+ * Uses the messaging abstraction layer for provider flexibility
  * @param {string} topicName - The topic to publish to
  * @param {object} eventData - The event data to publish
  * @returns {Promise<void>}
@@ -72,30 +73,33 @@ export async function publishEvent(topicName, eventData) {
       },
     };
 
-    logger.debug('Publishing event via Dapr', {
-      operation: 'dapr_pubsub',
+    logger.debug('Publishing event via messaging provider', {
+      operation: 'messaging_pubsub',
       topicName,
       eventId: event.eventId,
       traceId: event.metadata.traceId,
     });
 
-    await daprClient.pubsub.publish(DAPR_PUBSUB_NAME, topicName, event);
+    const provider = getMessagingProvider();
+    const success = await provider.publishEvent(topicName, event, event.metadata.traceId);
 
-    logger.info('Event published successfully', {
-      operation: 'dapr_pubsub',
-      topicName,
-      eventId: event.eventId,
-      traceId: event.metadata.traceId,
-    });
+    if (success) {
+      logger.info('Event published successfully', {
+        operation: 'messaging_pubsub',
+        topicName,
+        eventId: event.eventId,
+        traceId: event.metadata.traceId,
+      });
+    }
   } catch (error) {
-    logger.error('Failed to publish event via Dapr', {
-      operation: 'dapr_pubsub',
+    logger.error('Failed to publish event', {
+      operation: 'messaging_pubsub',
       topicName,
       error: error.message,
       errorStack: error.stack,
       traceId: eventData?.traceId,
     });
-    throw error;
+    // Don't throw - graceful degradation
   }
 }
 

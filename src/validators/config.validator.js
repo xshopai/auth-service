@@ -14,8 +14,8 @@ const validationRules = {
   // Server Configuration
   NODE_ENV: {
     required: true,
-    validator: (env) => ['development', 'production', 'test', 'staging'].includes(env?.toLowerCase()),
-    errorMessage: 'NODE_ENV must be one of: development, production, test, staging',
+    validator: (env) => ['development', 'production', 'test'].includes(env?.toLowerCase()),
+    errorMessage: 'NODE_ENV must be one of: development, production, test',
   },
   PORT: {
     required: true,
