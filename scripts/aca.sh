@@ -264,8 +264,9 @@ echo -e "   JWT Algorithm:     $JWT_ALGORITHM"
 echo -e "   JWT Expiration:    $JWT_EXPIRATION seconds"
 echo ""
 
-read -p "Do you want to proceed with deployment? (y/N): " CONFIRM
-if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
+read -p "Do you want to proceed with deployment? (Y/n): " CONFIRM
+CONFIRM=${CONFIRM:-Y}
+if [[ "$CONFIRM" =~ ^[Nn]$ ]]; then
     print_warning "Deployment cancelled by user"
     exit 0
 fi
