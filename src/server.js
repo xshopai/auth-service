@@ -7,6 +7,10 @@
 import dotenv from 'dotenv';
 dotenv.config({ quiet: true });
 
+// Initialize Azure Monitor BEFORE any other imports
+// This ensures all HTTP requests and dependencies are tracked
+await import('./instrumentation.js');
+
 async function startServer() {
   try {
     // Start the application (imports app.js after env vars are loaded)

@@ -304,18 +304,44 @@ print_header "Step 2: Deploying Container App"
 # Get ACR credentials
 ACR_PASSWORD=$(az acr credential show --name "$ACR_NAME" --query "passwords[0].value" -o tsv)
 
+# Get Application Insights connection string from Key Vault
+print_info "Retrieving Application Insights connection string from Key Vault..."
+APP_INSIGHTS_CONN=$(az keyvault secret show --vault-name "$KEY_VAULT" --name "xshopai-appinsights-connection" --query value -o tsv 2>/dev/null || echo "")
+
+if [ -z "$APP_INSIGHTS_CONN" ]; then
+    print_warning "Application Insights connection not found in Key Vault"
+    print_info "Trying to get from Application Insights resource..."
+    APP_INSIGHTS_NAME="appi-${PROJECT_NAME}-${ENVIRONMENT}-${SUFFIX}"
+    APP_INSIGHTS_CONN=$(az monitor app-insights component show --app "$APP_INSIGHTS_NAME" --resource-group "$RESOURCE_GROUP" --query connectionString -o tsv 2>/dev/null || echo "")
+    if [ -n "$APP_INSIGHTS_CONN" ]; then
+        print_success "Retrieved from Application Insights resource"
+    else
+        print_warning "Application Insights connection string not found - telemetry may not work"
+    fi
+else
+    print_success "Application Insights connection string retrieved from Key Vault"
+fi
+
 # Build environment variables (using all configuration variables)
 ENV_VARS=("NODE_ENV=$NODE_ENV")
-ENV_VARS+=("NAME=$SERVICE_NAME")
+ENV_VARS+=("SERVICE_NAME=$SERVICE_NAME")
 ENV_VARS+=("VERSION=$SERVICE_VERSION")
 ENV_VARS+=("PORT=$APP_PORT")
 ENV_VARS+=("DAPR_HTTP_PORT=$DAPR_HTTP_PORT")
 ENV_VARS+=("DAPR_PUBSUB_NAME=$DAPR_PUBSUB_NAME")
 ENV_VARS+=("DAPR_USER_SERVICE_APP_ID=user-service")
+ENV_VARS+=("MESSAGING_PROVIDER=dapr")
 ENV_VARS+=("JWT_SECRET=$JWT_SECRET")
 ENV_VARS+=("JWT_ALGORITHM=$JWT_ALGORITHM")
 ENV_VARS+=("JWT_EXPIRATION=$JWT_EXPIRATION")
 ENV_VARS+=("LOG_LEVEL=$LOG_LEVEL")
+ENV_VARS+=("OTEL_SERVICE_NAME=$SERVICE_NAME")
+ENV_VARS+=("OTEL_RESOURCE_ATTRIBUTES=service.name=$SERVICE_NAME,service.version=$SERVICE_VERSION,deployment.environment=$ENVIRONMENT")
+
+# Add Application Insights connection string if available
+if [ -n "$APP_INSIGHTS_CONN" ]; then
+    ENV_VARS+=("APPLICATIONINSIGHTS_CONNECTION_STRING=$APP_INSIGHTS_CONN")
+fi
 
 # Check if container app exists
 if az containerapp show --name "$CONTAINER_APP_NAME" --resource-group "$RESOURCE_GROUP" &> /dev/null; then

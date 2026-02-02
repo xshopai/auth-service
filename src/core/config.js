@@ -8,9 +8,9 @@
 
 export default {
   service: {
-    name: process.env.NAME || 'auth-service',
+    name: process.env.SERVICE_NAME || process.env.NAME || 'auth-service',
     version: process.env.VERSION || '1.0.0',
-    port: parseInt(process.env.PORT, 10) || 8003,
+    port: parseInt(process.env.PORT, 10) || 8004,
     host: process.env.HOST || '0.0.0.0',
     nodeEnv: process.env.NODE_ENV || 'development',
   },
@@ -33,7 +33,7 @@ export default {
     httpPort: parseInt(process.env.DAPR_HTTP_PORT, 10) || 3500,
     grpcPort: parseInt(process.env.DAPR_GRPC_PORT, 10) || 50001,
     host: process.env.DAPR_HOST || 'localhost',
-    pubsubName: 'pubsub',
+    pubsubName: process.env.DAPR_PUBSUB_NAME || 'pubsub',
     appId: process.env.DAPR_APP_ID || 'auth-service',
   },
 
