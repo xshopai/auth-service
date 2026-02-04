@@ -69,28 +69,30 @@ class DaprSecretManager {
   }
 
   /**
-   * Get JWT configuration from environment variables (preferred) or Dapr secret store (fallback)
+   * Get JWT configuration from Dapr secret store (preferred) or environment variables (fallback)
    *
-   * In Azure: JWT_SECRET is set as env var during deployment (retrieved from Key Vault)
-   * Locally with Dapr: JWT_SECRET is retrieved from .dapr/secrets.json
+   * Priority Order:
+   * 1. Dapr Secret Store (.dapr/secrets.json) - when running with Dapr
+   * 2. Environment Variable (.env file) - when running without Dapr
    *
    * @returns {Promise<Object>} JWT configuration parameters
    */
   async getJwtConfig() {
-    // Prefer environment variable (set during deployment from Key Vault)
-    let secret = process.env.JWT_SECRET;
+    let secret = null;
 
-    // Fallback to Dapr secret store for local development
-    if (!secret) {
-      try {
-        secret = await this.getSecret('JWT_SECRET');
-      } catch (error) {
-        logger.warn('JWT_SECRET not found in Dapr store');
-      }
+    // Priority 1: Try Dapr secret store first
+    try {
+      secret = await this.getSecret('JWT_SECRET');
+      logger.debug('JWT_SECRET retrieved from Dapr secret store');
+    } catch (error) {
+      logger.debug('JWT_SECRET not found in Dapr secret store, trying ENV variable');
+
+      // Priority 2: Fallback to environment variable (from .env file)
+      secret = process.env.JWT_SECRET;
     }
 
     if (!secret) {
-      throw new Error('JWT_SECRET not found. Set it as env var or in Dapr secret store.');
+      throw new Error('JWT_SECRET not found. Configure it in Dapr secret store or .env file.');
     }
 
     return {
