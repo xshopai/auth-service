@@ -54,41 +54,45 @@ export async function invokeService(appId, methodName, httpMethod = 'GET', data 
 }
 /**
  * Publish an event to a topic via messaging provider
- * Uses the messaging abstraction layer for provider flexibility
- * @param {string} topicName - The topic to publish to
- * @param {object} eventData - The event data to publish
+ * 
+ * Dapr handles CloudEvents wrapping/unwrapping automatically.
+ * We send just the business data, and Dapr will:
+ * 1. Wrap it in CloudEvents format when publishing
+ * 2. Deliver the data to subscribers with CloudEvents metadata
+ *
+ * @param {string} topicName - The topic to publish to (e.g., 'auth.user.registered')
+ * @param {object} eventData - The event payload (business data)
  * @returns {Promise<void>}
  */
 export async function publishEvent(topicName, eventData) {
   try {
-    const event = {
-      eventId: generateEventId(),
-      eventType: topicName,
-      timestamp: new Date().toISOString(),
+    const traceId = eventData.traceId || generateEventId();
+
+    // Add metadata for tracing
+    const eventPayload = {
+      ...eventData,
+      // Include source and timestamp for auditing
       source: 'auth-service',
-      data: eventData,
-      metadata: {
-        traceId: eventData.traceId || generateEventId(),
-        version: '1.0',
-      },
+      timestamp: new Date().toISOString(),
+      traceId,
     };
 
-    logger.debug('Publishing event via messaging provider', {
+    logger.debug('Publishing event via Dapr (native CloudEvents)', {
       operation: 'messaging_pubsub',
       topicName,
-      eventId: event.eventId,
-      traceId: event.metadata.traceId,
+      traceId,
+      dataKeys: Object.keys(eventData || {}),
+      hasEmail: !!eventData?.email,
     });
 
     const provider = getMessagingProvider();
-    const success = await provider.publishEvent(topicName, event, event.metadata.traceId);
+    const success = await provider.publishEvent(topicName, eventPayload, traceId);
 
     if (success) {
-      logger.info('Event published successfully', {
+      logger.info('Event published successfully via Dapr', {
         operation: 'messaging_pubsub',
         topicName,
-        eventId: event.eventId,
-        traceId: event.metadata.traceId,
+        traceId,
       });
     }
   } catch (error) {

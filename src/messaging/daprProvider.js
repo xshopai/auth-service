@@ -79,6 +79,9 @@ class DaprProvider extends MessagingProvider {
         eventData.metadata = { correlationId };
       }
 
+      // Let Dapr handle CloudEvents wrapping/unwrapping natively
+      // Do NOT use rawPayload - it causes deserialization issues with Azure Service Bus
+      // Dapr will wrap our data in CloudEvents format and subscribers will receive it correctly
       await client.pubsub.publish(this.pubsubName, topic, eventData);
 
       logger.info('Published event via Dapr', {
