@@ -44,11 +44,11 @@ const validationRules = {
     errorMessage: 'JWT_SECRET must be at least 32 characters long if provided',
   },
 
-  // Service Discovery (Dapr)
+  // Service Discovery (Dapr) - Only required when using Dapr
   DAPR_USER_SERVICE_APP_ID: {
-    required: true,
-    validator: (value) => value && value.length > 0,
-    errorMessage: 'DAPR_USER_SERVICE_APP_ID must be a non-empty string',
+    required: false, // Optional: only needed when MESSAGING_PROVIDER=dapr
+    validator: (value) => !value || value.length > 0,
+    errorMessage: 'DAPR_USER_SERVICE_APP_ID must be a non-empty string if provided',
   },
 
   // Logging Configuration
