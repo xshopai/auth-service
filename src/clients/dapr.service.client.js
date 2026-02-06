@@ -1,49 +1,94 @@
-import { DaprClient, CommunicationProtocolEnum } from '@dapr/dapr';
 import logger from '../core/logger.js';
 import { getMessagingProvider } from '../messaging/index.js';
 
+// Determine service invocation mode based on MESSAGING_PROVIDER
+const MESSAGING_PROVIDER = process.env.MESSAGING_PROVIDER || 'rabbitmq';
+const USE_DAPR = MESSAGING_PROVIDER === 'dapr';
+
+// Dapr sidecar configuration (only used when MESSAGING_PROVIDER=dapr)
 const DAPR_HOST = process.env.DAPR_HOST || 'localhost';
 const DAPR_HTTP_PORT = process.env.DAPR_HTTP_PORT || '3500';
 
-// Initialize Dapr client for service invocation
-const daprClient = new DaprClient({
-  daprHost: DAPR_HOST,
-  daprPort: DAPR_HTTP_PORT,
-  communicationProtocol: CommunicationProtocolEnum.HTTP,
-});
+// Dapr App IDs for service discovery (used when MESSAGING_PROVIDER=dapr)
+const DAPR_APP_IDS = {
+  'user-service': process.env.DAPR_USER_SERVICE_APP_ID || 'user-service',
+};
+
+// Direct HTTP URLs for service discovery (used when MESSAGING_PROVIDER != dapr)
+const SERVICE_URLS = {
+  'user-service': process.env.USER_SERVICE_URL || 'http://xshopai-user-service:8002',
+};
 
 /**
- * Invoke a method on another service via Dapr
- * @param {string} appId - The app ID of the target service
+ * Invoke a method on another service
+ * - When MESSAGING_PROVIDER=dapr: Uses Dapr service invocation
+ * - Otherwise: Uses direct HTTP calls
+ *
+ * @param {string} serviceName - The logical service name (e.g., 'user-service')
  * @param {string} methodName - The method/endpoint to invoke
  * @param {string} httpMethod - The HTTP method (GET, POST, DELETE, etc.)
  * @param {object} data - The request body (for POST/PUT)
  * @param {object} metadata - Additional metadata (headers, query params)
  * @returns {Promise<object>} - The response from the service
  */
-export async function invokeService(appId, methodName, httpMethod = 'GET', data = null, metadata = {}) {
+export async function invokeService(serviceName, methodName, httpMethod = 'GET', data = null, metadata = {}) {
   try {
-    logger.debug('Invoking service via Dapr', {
-      operation: 'dapr_service_invocation',
-      appId,
-      methodName,
-      httpMethod,
-    });
+    let url;
+    const cleanMethodName = methodName.startsWith('/') ? methodName.slice(1) : methodName;
 
-    const response = await daprClient.invoker.invoke(appId, methodName, httpMethod, data, metadata);
+    if (USE_DAPR) {
+      // Dapr service invocation: http://localhost:3500/v1.0/invoke/{appId}/method/{method}
+      const appId = DAPR_APP_IDS[serviceName] || serviceName;
+      url = `http://${DAPR_HOST}:${DAPR_HTTP_PORT}/v1.0/invoke/${appId}/method/${cleanMethodName}`;
 
-    logger.debug('Service invocation successful', {
-      operation: 'dapr_service_invocation',
-      appId,
-      methodName,
-      httpMethod,
-    });
+      logger.debug('Invoking service via Dapr', {
+        operation: 'dapr_service_invocation',
+        serviceName,
+        appId,
+        url,
+        httpMethod,
+      });
+    } else {
+      // Direct HTTP call
+      const baseUrl = SERVICE_URLS[serviceName] || `http://xshopai-${serviceName}:8000`;
+      url = `${baseUrl}/${cleanMethodName}`;
 
-    return response;
+      logger.debug('Invoking service via HTTP', {
+        operation: 'http_service_invocation',
+        serviceName,
+        url,
+        httpMethod,
+      });
+    }
+
+    const options = {
+      method: httpMethod.toUpperCase(),
+      headers: {
+        'Content-Type': 'application/json',
+        ...metadata.headers,
+      },
+    };
+
+    if (data && httpMethod.toUpperCase() !== 'GET') {
+      options.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    return null;
   } catch (error) {
     logger.error('Service invocation failed', {
-      operation: 'dapr_service_invocation',
-      appId,
+      operation: USE_DAPR ? 'dapr_service_invocation' : 'http_service_invocation',
+      serviceName,
       methodName,
       httpMethod,
       error: error.message,
@@ -54,7 +99,7 @@ export async function invokeService(appId, methodName, httpMethod = 'GET', data 
 }
 /**
  * Publish an event to a topic via messaging provider
- * 
+ *
  * Dapr handles CloudEvents wrapping/unwrapping automatically.
  * We send just the business data, and Dapr will:
  * 1. Wrap it in CloudEvents format when publishing
