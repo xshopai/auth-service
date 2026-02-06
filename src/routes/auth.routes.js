@@ -25,7 +25,10 @@ router.get('/me', authMiddleware, authorizeRoles('customer', 'admin'), authContr
 // JWT configuration endpoint for BFF
 router.get('/config/jwt', async (req, res, next) => {
   try {
-    const jwtSecret = await secretManager.getSecret('JWT_SECRET');
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET not configured');
+    }
     res.json({
       secret: jwtSecret,
       algorithm: 'HS256',
