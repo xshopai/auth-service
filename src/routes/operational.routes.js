@@ -1,5 +1,5 @@
 import express from 'express';
-import { health, readiness, liveness, metrics } from '../controllers/operational.controller.js';
+import { readiness, liveness, metrics } from '../controllers/operational.controller.js';
 
 const router = express.Router();
 
@@ -11,13 +11,6 @@ const router = express.Router();
  * - Monitoring systems (Prometheus, Datadog, etc.)
  * - DevOps tools
  */
-
-/**
- * @route   GET /health
- * @desc    Main health check endpoint - checks overall service health
- * @access  Public (no auth required)
- */
-router.get('/health', health);
 
 /**
  * @route   GET /health/ready
