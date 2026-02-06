@@ -2,30 +2,25 @@ import jwt from 'jsonwebtoken';
 import logger from '../core/logger.js';
 import { getJwtConfig } from '../clients/index.js';
 
-// Cache JWT config to avoid repeated Dapr calls
-let _jwtConfigCache = null;
-
-async function getCachedJwtConfig() {
-  if (_jwtConfigCache === null) {
-    _jwtConfigCache = await getJwtConfig();
-  }
-  return _jwtConfigCache;
+// Get cached JWT config (now synchronous)
+function getCachedJwtConfig() {
+  return getJwtConfig();
 }
 
 // --- Stateless JWT helpers ---
-export async function signToken(payload, expiresIn) {
-  const jwtConfig = await getCachedJwtConfig();
+export function signToken(payload, expiresIn) {
+  const jwtConfig = getCachedJwtConfig();
   // Use configured expiration if not explicitly provided
   const tokenExpiration = expiresIn || `${jwtConfig.expiration}s`;
   return jwt.sign(payload, jwtConfig.secret, { expiresIn: tokenExpiration });
 }
 
-export async function verifyToken(token) {
+export function verifyToken(token) {
   try {
-    const jwtConfig = await getCachedJwtConfig();
+    const jwtConfig = getCachedJwtConfig();
     return jwt.verify(token, jwtConfig.secret, {
       issuer: jwtConfig.issuer,
-      audience: jwtConfig.audience
+      audience: jwtConfig.audience,
     });
   } catch {
     return null;
@@ -37,7 +32,7 @@ export async function verifyToken(token) {
  * Issues a JWT access token following industry standards (RFC 7519)
  * Returns the token string.
  */
-export async function issueJwtToken(req, res, user) {
+export function issueJwtToken(req, res, user) {
   logger.debug('Issuing JWT for user', {
     operation: 'issue_jwt',
     userId: user._id,
@@ -45,7 +40,7 @@ export async function issueJwtToken(req, res, user) {
     spanId: req.spanId,
   });
 
-  const jwtConfig = await getCachedJwtConfig();
+  const jwtConfig = getCachedJwtConfig();
 
   // Standard JWT claims (RFC 7519)
   const payload = {
@@ -63,7 +58,7 @@ export async function issueJwtToken(req, res, user) {
     emailVerified: user.isEmailVerified || false,
   };
 
-  const token = await signToken(payload); // Use configured expiration
+  const token = signToken(payload); // Use configured expiration
 
   // Set as HTTP-only cookie for web clients
   res.cookie('token', token, {

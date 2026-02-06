@@ -1,7 +1,6 @@
 import express from 'express';
 import * as authController from '../controllers/auth.controller.js';
 import { authMiddleware, authorizeRoles } from '../middlewares/auth.middleware.js';
-import { secretManager } from '../clients/dapr.secret.manager.js';
 
 const router = express.Router();
 
