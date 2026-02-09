@@ -130,7 +130,7 @@ export async function publishEvent(topicName, eventData) {
       hasEmail: !!eventData?.email,
     });
 
-    const provider = getMessagingProvider();
+    const provider = await getMessagingProvider();
     const success = await provider.publishEvent(topicName, eventPayload, traceId);
 
     if (success) {
