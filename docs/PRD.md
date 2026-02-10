@@ -6,8 +6,7 @@
 2. [Scope](#2-scope)
 3. [User Stories](#3-user-stories)
 4. [Functional Requirements](#4-functional-requirements)
-5. [Traceability Matrix](#5-traceability-matrix)
-6. [Non-Functional Requirements](#6-non-functional-requirements)
+5. [Non-Functional Requirements](#5-non-functional-requirements)
 
 ---
 
@@ -28,17 +27,7 @@ The Auth Service is a core microservice within the xshopai e-commerce platform r
 | **Role-Based Access Control** | Support customer and admin roles with appropriate permissions  |
 | **Account Lifecycle**         | Handle account activation, deactivation, and deletion          |
 
-### 1.3 Success Metrics
-
-| Metric                      | Target  | Description                                          |
-| --------------------------- | ------- | ---------------------------------------------------- |
-| Login Response Time (p95)   | < 200ms | 95th percentile response time for login requests     |
-| Token Validation Time (p95) | < 50ms  | 95th percentile response time for token verification |
-| Authentication Success Rate | > 99%   | Percentage of valid login attempts that succeed      |
-| Service Availability        | 99.9%   | Uptime during business hours                         |
-| Failed Login Detection      | 100%    | All failed login attempts are logged for security    |
-
-### 1.4 Target Users
+### 1.3 Target Users
 
 | User                     | Interaction                                                           |
 | ------------------------ | --------------------------------------------------------------------- |
@@ -572,40 +561,9 @@ The system shall provide an API endpoint for BFF services to retrieve JWT config
 
 ---
 
-## 5. Traceability Matrix
+## 5. Non-Functional Requirements
 
-| Req ID | Requirement           | User Story | Endpoint                         | Test Case   |
-| ------ | --------------------- | ---------- | -------------------------------- | ----------- |
-| 4.1    | User Login            | 3.1        | POST /api/auth/login             | TC-AUTH-001 |
-| 4.2    | User Logout           | 3.1        | POST /api/auth/logout            | TC-AUTH-002 |
-| 4.3    | User Registration     | 3.2        | POST /api/auth/register          | TC-AUTH-003 |
-| 4.4    | Forgot Password       | 3.3        | POST /api/auth/password/forgot   | TC-AUTH-004 |
-| 4.5    | Reset Password        | 3.3        | POST /api/auth/password/reset    | TC-AUTH-005 |
-| 4.6    | Change Password       | 3.5        | POST /api/auth/password/change   | TC-AUTH-006 |
-| 4.7    | Verify Email          | 3.4        | GET /api/auth/email/verify       | TC-AUTH-007 |
-| 4.8    | Resend Verification   | 3.4        | POST /api/auth/email/resend      | TC-AUTH-008 |
-| 4.9    | Verify Token          | 3.8        | GET /api/auth/verify             | TC-AUTH-009 |
-| 4.10   | Get Current User      | 3.8        | GET /api/auth/me                 | TC-AUTH-010 |
-| 4.11   | Request Reactivation  | 3.6        | POST /api/auth/reactivate        | TC-AUTH-011 |
-| 4.12   | Reactivate Account    | 3.6        | GET /api/auth/reactivate         | TC-AUTH-012 |
-| 4.13   | Delete Own Account    | 3.7        | DELETE /api/auth/account         | TC-AUTH-013 |
-| 4.14   | Admin Delete User     | 3.7        | DELETE /api/admin/auth/users/:id | TC-AUTH-014 |
-| 4.15   | Get JWT Configuration | 3.8        | GET /api/auth/config/jwt         | TC-AUTH-015 |
-
----
-
-## 6. Non-Functional Requirements
-
-### 6.1 Performance
-
-| Requirement                | Target                                           |
-| -------------------------- | ------------------------------------------------ |
-| Login response time (p95)  | < 200ms                                          |
-| Token validation time      | < 50ms                                           |
-| Registration response time | < 500ms (includes User Service call)             |
-| Concurrent users           | Support 1000+ concurrent authentication requests |
-
-### 6.2 Security
+### 5.1 Security
 
 | Requirement          | Implementation                                    |
 | -------------------- | ------------------------------------------------- |
@@ -617,16 +575,7 @@ The system shall provide an API endpoint for BFF services to retrieve JWT config
 | Input validation     | All inputs validated and sanitized                |
 | Failed login logging | All failed attempts logged with IP and user agent |
 
-### 6.3 Reliability
-
-| Requirement           | Target                                        |
-| --------------------- | --------------------------------------------- |
-| Service availability  | 99.9% uptime                                  |
-| Error handling        | Graceful error responses with correlation IDs |
-| Event publishing      | At-least-once delivery via Dapr Pub/Sub       |
-| Dependency resilience | Service continues if event publishing fails   |
-
-### 6.4 Observability
+### 5.2 Observability
 
 | Requirement        | Implementation                                 |
 | ------------------ | ---------------------------------------------- |
@@ -635,7 +584,7 @@ The system shall provide an API endpoint for BFF services to retrieve JWT config
 | Health checks      | /health, /health/ready, /health/live endpoints |
 | Metrics            | /metrics endpoint with memory, uptime stats    |
 
-### 6.5 Scalability
+### 5.3 Scalability
 
 | Requirement        | Implementation                          |
 | ------------------ | --------------------------------------- |

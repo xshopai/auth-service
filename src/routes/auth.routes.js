@@ -13,6 +13,9 @@ router.post('/password/forgot', authController.forgotPassword);
 router.post('/password/reset', authController.resetPassword);
 router.post('/password/change', authMiddleware, authController.changePassword);
 
+// Admin password operations
+router.post('/admin/password/reset', authMiddleware, authorizeRoles('admin'), authController.adminResetPassword);
+
 // Email operations
 router.get('/email/verify', authController.verifyEmail);
 router.post('/email/resend', authController.resendVerificationEmail);

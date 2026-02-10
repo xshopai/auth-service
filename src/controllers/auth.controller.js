@@ -673,3 +673,72 @@ export const adminDeleteUser = asyncHandler(async (req, res, next) => {
   }
   res.status(204).send();
 });
+
+/**
+ * @desc    Admin: Trigger password reset for any user
+ * @route   POST /auth/admin/password/reset
+ * @access  Admin only
+ */
+export const adminResetPassword = asyncHandler(async (req, res, next) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return next(new ErrorResponse('User ID is required', 400));
+  }
+
+  // Get user by ID (through user-service client if available, or by email lookup)
+  // For now, we'll need to add a getUserById function or use email
+  // Since we have getUserByEmail but not getUserById exposed, let's use email from body
+  const { email } = req.body;
+
+  if (!email && !userId) {
+    return next(new ErrorResponse('Either email or userId is required', 400));
+  }
+
+  let user;
+  if (email) {
+    user = await getUserByEmail(email);
+  } else {
+    // If only userId provided, we need to fetch user by ID
+    // This requires adding getUserById to user.service.client.js or we can skip and require email
+    return next(new ErrorResponse('Email is required for admin password reset', 400));
+  }
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', 404));
+  }
+
+  // Generate reset token
+  const resetToken = await signToken({ email: user.email }, '1h');
+  const resetUrl = `${process.env.WEB_UI_BASE_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+
+  // Publish event for notification-service to send email
+  try {
+    await publishEvent('auth.password.reset.requested', {
+      userId: user._id.toString(),
+      email: user.email,
+      username: `${user.firstName} ${user.lastName}`,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      resetToken,
+      resetUrl,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 1 hour
+      requestIp: req.ip,
+      triggeredBy: 'admin',
+      adminId: req.user?.id,
+      traceId: req.traceId,
+      timestamp: new Date().toISOString(),
+    });
+    logger.info('Admin-triggered password reset event published', {
+      userId: user._id,
+      email: user.email,
+      adminId: req.user?.id,
+      traceId: req.traceId,
+    });
+  } catch (error) {
+    logger.error('Failed to publish admin password reset event', { email: user.email, error: error.message });
+    // Don't fail the request if event publishing fails
+  }
+
+  res.json({ message: 'Password reset email sent to user' });
+});
