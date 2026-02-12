@@ -12,7 +12,17 @@ export function signToken(payload, expiresIn) {
   const jwtConfig = getCachedJwtConfig();
   // Use configured expiration if not explicitly provided
   const tokenExpiration = expiresIn || `${jwtConfig.expiration}s`;
-  return jwt.sign(payload, jwtConfig.secret, { expiresIn: tokenExpiration });
+  
+  // Build options - only add issuer/audience if not already in payload
+  const options = { expiresIn: tokenExpiration };
+  if (!payload.iss) {
+    options.issuer = jwtConfig.issuer;
+  }
+  if (!payload.aud) {
+    options.audience = jwtConfig.audience;
+  }
+  
+  return jwt.sign(payload, jwtConfig.secret, options);
 }
 
 export function verifyToken(token) {

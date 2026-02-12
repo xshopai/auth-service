@@ -180,8 +180,8 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('User not found', 404));
   }
 
-  // Call user-service PATCH /users/ to update password (self-service endpoint)
-  const resp = await fetch(`${process.env.USER_SERVICE_URL}/users/`, {
+  // Call user-service PATCH /api/users to update password (self-service endpoint)
+  const resp = await fetch(`${process.env.USER_SERVICE_URL}/api/users`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ newPassword, isReset: true }),
@@ -256,8 +256,8 @@ export const changePassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('JWT missing', 401));
   }
 
-  // Forward password change to user service PATCH /users with { password }
-  const resp = await fetch(`${process.env.USER_SERVICE_URL}`, {
+  // Forward password change to user service PATCH /api/users with { password }
+  const resp = await fetch(`${process.env.USER_SERVICE_URL}/api/users`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -304,7 +304,7 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
   }
   // Issue a short-lived JWT for the user to authorize the PATCH
   const userJwt = await signToken({ id: user._id, email: user.email, roles: user.roles }, '15m');
-  const resp = await fetch(`${process.env.USER_SERVICE_URL}`, {
+  const resp = await fetch(`${process.env.USER_SERVICE_URL}/api/users`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
