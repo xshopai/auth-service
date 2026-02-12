@@ -37,7 +37,8 @@ app.use(errorHandler);
 // Start server
 app.listen(config.service.port, config.service.host, () => {
   const { host, port, nodeEnv, name, version } = config.service;
-  logger.info(`Auth service running on ${host}:${port} in ${nodeEnv} mode`, {
+  const displayHost = host === '0.0.0.0' ? 'localhost' : host;
+  logger.info(`Auth service running on ${displayHost}:${port} in ${nodeEnv} mode`, {
     service: name,
     version,
   });
