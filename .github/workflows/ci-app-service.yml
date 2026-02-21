@@ -37,12 +37,12 @@ on:
         options: [dev, prod]
         default: dev
       suffix:
-        description: "Resource suffix (e.g. bicep1) — leave blank to use org default"
+        description: "Resource suffix (e.g. as01) — leave blank to use org default"
         required: false
         default: ""
 
 env:
-  NODE_VERSION: "24"
+  NODE_VERSION: "24" # Must match infrastructure runtime (NODE:24-lts)
   SERVICE_NAME: auth-service
   PROJECT_NAME: xshopai
 
