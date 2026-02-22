@@ -9,7 +9,7 @@ export async function getUserByEmail(email) {
     const response = await invokeService(
       USER_SERVICE,
       `api/users/findByEmail?email=${encodeURIComponent(email)}`,
-      'GET'
+      'GET',
     );
     return response;
   } catch (error) {
