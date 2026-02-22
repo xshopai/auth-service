@@ -3,7 +3,7 @@
  * Exports clients for external service communication
  */
 
-export { default as daprClient } from './dapr.service.client.js';
+export { default as serviceClient } from './service.client.js';
 export { default as userServiceClient } from './user.service.client.js';
 
 // JWT config from environment variables

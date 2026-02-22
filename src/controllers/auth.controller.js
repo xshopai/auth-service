@@ -5,7 +5,7 @@ import { getUserByEmail, createUser, deleteUserSelf, deleteUserById } from '../c
 import authValidator from '../validators/auth.validator.js';
 import logger from '../core/logger.js';
 import ErrorResponse from '../core/errors.js';
-import { publishEvent } from '../clients/dapr.service.client.js';
+import { publishEvent } from '../clients/service.client.js';
 
 /**
  * @desc    Log in a user with email and password

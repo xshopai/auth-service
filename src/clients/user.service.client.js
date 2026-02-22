@@ -1,4 +1,4 @@
-import { invokeService } from './dapr.service.client.js';
+import { invokeService } from './service.client.js';
 import logger from '../core/logger.js';
 
 // Service name for direct HTTP calls (URL configured via USER_SERVICE_URL env var)
