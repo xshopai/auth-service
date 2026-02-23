@@ -15,6 +15,9 @@ export default {
     nodeEnv: process.env.NODE_ENV || 'development',
   },
 
+  // Service Invocation Mode
+  serviceInvocationMode: process.env.SERVICE_INVOCATION_MODE || 'http',
+
   logging: {
     level: process.env.LOG_LEVEL || 'debug',
     format: process.env.LOG_FORMAT || 'console',
@@ -39,7 +42,8 @@ export default {
 
   services: {
     userService: {
-      appId: process.env.DAPR_USER_SERVICE_APP_ID || 'user-service',
+      url: process.env.USER_SERVICE_URL || 'http://localhost:8002',
+      appId: process.env.USER_SERVICE_APP_ID || 'user-service',
     },
     webUI: {
       baseUrl: process.env.WEB_UI_BASE_URL || 'http://localhost:3000',

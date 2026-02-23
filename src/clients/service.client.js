@@ -1,20 +1,20 @@
 import logger from '../core/logger.js';
 import { getMessagingProvider } from '../messaging/index.js';
 
-// Determine service invocation mode based on MESSAGING_PROVIDER
-const MESSAGING_PROVIDER = process.env.MESSAGING_PROVIDER || 'rabbitmq';
-const USE_DAPR = MESSAGING_PROVIDER === 'dapr';
+// Service invocation mode (independent from messaging)
+const SERVICE_INVOCATION_MODE = process.env.SERVICE_INVOCATION_MODE || 'http';
+const USE_DAPR = SERVICE_INVOCATION_MODE === 'dapr';
 
-// Dapr sidecar configuration (only used when MESSAGING_PROVIDER=dapr)
+// Dapr sidecar configuration (only used when SERVICE_INVOCATION_MODE=dapr)
 const DAPR_HOST = process.env.DAPR_HOST || 'localhost';
 const DAPR_HTTP_PORT = process.env.DAPR_HTTP_PORT || '3500';
 
-// Dapr App IDs for service discovery (used when MESSAGING_PROVIDER=dapr)
-const DAPR_APP_IDS = {
-  'user-service': process.env.DAPR_USER_SERVICE_APP_ID || 'user-service',
+// Service App IDs for Dapr service invocation (used when SERVICE_INVOCATION_MODE=dapr)
+const SERVICE_APP_IDS = {
+  'user-service': process.env.USER_SERVICE_APP_ID || 'user-service',
 };
 
-// Direct HTTP URLs for service discovery (used when MESSAGING_PROVIDER != dapr)
+// Direct HTTP URLs for service invocation (used when SERVICE_INVOCATION_MODE=http)
 const SERVICE_URLS = {
   'user-service': process.env.USER_SERVICE_URL || 'http://xshopai-user-service:8002',
 };
@@ -38,7 +38,7 @@ export async function invokeService(serviceName, methodName, httpMethod = 'GET',
 
     if (USE_DAPR) {
       // Dapr service invocation: http://localhost:3500/v1.0/invoke/{appId}/method/{method}
-      const appId = DAPR_APP_IDS[serviceName] || serviceName;
+      const appId = SERVICE_APP_IDS[serviceName] || serviceName;
       url = `http://${DAPR_HOST}:${DAPR_HTTP_PORT}/v1.0/invoke/${appId}/method/${cleanMethodName}`;
 
       logger.debug('Invoking service via Dapr', {
