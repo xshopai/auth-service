@@ -137,3 +137,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Runtime env — generated from .env.http or .env.dapr at startup, never committed
+.env
