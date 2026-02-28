@@ -2,19 +2,19 @@ import logger from '../core/logger.js';
 import { getMessagingProvider } from '../messaging/index.js';
 
 // Service invocation mode (independent from messaging)
-const SERVICE_INVOCATION_MODE = process.env.SERVICE_INVOCATION_MODE || 'http';
-const USE_DAPR = SERVICE_INVOCATION_MODE === 'dapr';
+const PLATFORM_MODE = process.env.PLATFORM_MODE || 'direct';
+const USE_DAPR = PLATFORM_MODE === 'dapr';
 
-// Dapr sidecar configuration (only used when SERVICE_INVOCATION_MODE=dapr)
+// Dapr sidecar configuration (only used when PLATFORM_MODE=dapr)
 const DAPR_HOST = process.env.DAPR_HOST || 'localhost';
 const DAPR_HTTP_PORT = process.env.DAPR_HTTP_PORT || '3500';
 
-// Service App IDs for Dapr service invocation (used when SERVICE_INVOCATION_MODE=dapr)
+// Service App IDs for Dapr service invocation (used when PLATFORM_MODE=dapr)
 const SERVICE_APP_IDS = {
   'user-service': process.env.USER_SERVICE_APP_ID || 'user-service',
 };
 
-// Direct HTTP URLs for service invocation (used when SERVICE_INVOCATION_MODE=http)
+// Direct HTTP URLs for service invocation (used when PLATFORM_MODE=direct)
 const SERVICE_URLS = {
   'user-service': process.env.USER_SERVICE_URL || 'http://xshopai-user-service:8002',
 };
