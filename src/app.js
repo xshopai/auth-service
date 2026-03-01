@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { validateConfig } from './validators/config.validator.js';
 import config from './core/config.js';
 import logger from './core/logger.js';
+import { register as consulRegister, deregister as consulDeregister } from './core/consulRegistration.js';
 import authRoutes from './routes/auth.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import homeRoutes from './routes/home.routes.js';
@@ -35,18 +36,20 @@ app.use('/api/admin/auth', adminRoutes);
 app.use(errorHandler);
 
 // Start server
-app.listen(config.service.port, config.service.host, () => {
+app.listen(config.service.port, config.service.host, async () => {
   const { host, port, nodeEnv, name, version } = config.service;
   const displayHost = host === '0.0.0.0' ? 'localhost' : host;
   logger.info(`Auth service running on ${displayHost}:${port} in ${nodeEnv} mode`, {
     service: name,
     version,
   });
+  await consulRegister('auth-service', port, host);
 });
 
 // Graceful shutdown
-const gracefulShutdown = (signal) => {
+const gracefulShutdown = async (signal) => {
   logger.info(`Received ${signal}. Starting graceful shutdown...`);
+  await consulDeregister();
   process.exit(0);
 };
 
