@@ -42,7 +42,6 @@ export default {
 
   services: {
     userService: {
-      url: process.env.USER_SERVICE_URL || 'http://localhost:8002',
       appId: process.env.USER_SERVICE_APP_ID || 'user-service',
     },
     webUI: {

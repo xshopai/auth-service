@@ -1,7 +1,7 @@
 import { invokeService } from './service.client.js';
 import logger from '../core/logger.js';
 
-// Service name for direct HTTP calls (URL configured via USER_SERVICE_URL env var)
+// Service name for direct HTTP calls (URL resolved via serviceResolver)
 const USER_SERVICE = 'user-service';
 
 export async function getUserByEmail(email) {

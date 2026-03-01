@@ -6,6 +6,7 @@ import authValidator from '../validators/auth.validator.js';
 import logger from '../core/logger.js';
 import ErrorResponse from '../core/errors.js';
 import { publishEvent } from '../clients/service.client.js';
+import { resolve as resolveService } from '../core/serviceResolver.js';
 
 /**
  * @desc    Log in a user with email and password
@@ -181,7 +182,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   }
 
   // Call user-service PATCH /api/users to update password (self-service endpoint)
-  const resp = await fetch(`${process.env.USER_SERVICE_URL}/api/users`, {
+  const resp = await fetch(`${resolveService('user-service')}/api/users`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ newPassword, isReset: true }),
@@ -257,7 +258,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   }
 
   // Forward password change to user service PATCH /api/users with { password }
-  const resp = await fetch(`${process.env.USER_SERVICE_URL}/api/users`, {
+  const resp = await fetch(`${resolveService('user-service')}/api/users`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -304,7 +305,7 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
   }
   // Issue a short-lived JWT for the user to authorize the PATCH
   const userJwt = await signToken({ id: user._id, email: user.email, roles: user.roles }, '15m');
-  const resp = await fetch(`${process.env.USER_SERVICE_URL}/api/users`, {
+  const resp = await fetch(`${resolveService('user-service')}/api/users`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -623,7 +624,7 @@ export const reactivateAccount = asyncHandler(async (req, res, next) => {
   }
   // Issue a short-lived JWT for the user to authorize the PATCH
   const userJwt = await signToken({ id: user._id, email: user.email, roles: user.roles }, '15m');
-  const resp = await fetch(`${process.env.USER_SERVICE_URL}`, {
+  const resp = await fetch(`${resolveService('user-service')}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
